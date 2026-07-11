@@ -17,14 +17,21 @@ class AIService:
 
     def __init__(self):
 
-        # Register available providers (Lazy Initialization)
+        # Register provider classes
         self.provider_classes = {
             "gemini": GeminiProvider,
             "groq": GroqProvider,
             "deepseek": DeepSeekProvider,
         }
 
+        # Cache provider instances
+        self.provider_instances = {}
+
     def _get_provider(self, provider_name: str):
+
+        # Return cached instance if already created
+        if provider_name in self.provider_instances:
+            return self.provider_instances[provider_name]
 
         provider_class = self.provider_classes.get(provider_name)
 
@@ -33,15 +40,19 @@ class AIService:
                 f"Unknown provider: {provider_name}"
             )
 
-        # Create provider instance only when needed
-        return provider_class()
+        # Create provider instance
+        provider = provider_class()
+
+        # Cache it for future requests
+        self.provider_instances[provider_name] = provider
+
+        return provider
 
     def _generate_with_fallback(
         self,
         providers: list[str],
         prompt: str
     ) -> str:
-
 
         for provider_name in providers:
 

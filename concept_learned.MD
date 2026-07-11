@@ -131,3 +131,93 @@
 - Returning multiple columns using db.query().
 - Tuple Unpacking in Python.
 - Difference between Distance and Similarity Score.
+
+
+# Week 2
+
+## Day 5 - AI Service Architecture
+
+### AI Service
+- Understood why AI-related business logic should be separated from API routes.
+- Learned how an AI Service acts as a single entry point for interacting with multiple LLM providers.
+- Understood how provider abstraction makes the application independent of a specific AI model.
+
+---
+
+### Object-Oriented Design
+- Understood the purpose of Abstract Base Classes (ABC).
+- Learned how abstract methods define a common interface for all AI providers.
+- Understood polymorphism through a common `generate()` method.
+- Learned the Provider Pattern for supporting multiple AI providers.
+
+---
+
+### Provider Management
+- Understood Provider Registry using a dictionary.
+- Learned why dictionary lookup is preferred over multiple `if-else` statements.
+- Understood the Open/Closed Principle by adding new providers without modifying existing logic.
+
+---
+
+### Lazy Initialization & Caching
+- Learned Lazy Initialization to create provider instances only when needed.
+- Understood Provider Instance Caching to reuse existing clients across requests.
+- Learned the difference between eager initialization and lazy initialization.
+- Understood the performance benefits of caching provider instances.
+
+---
+
+### Reliability
+- Learned Retry Mechanism for handling temporary failures.
+- Understood Provider Fallback to automatically switch providers when one fails.
+- Learned the difference between Retry and Fallback.
+
+---
+
+### Logging & Error Handling
+- Understood the importance of structured logging in production applications.
+- Learned why logging is preferred over `print()` statements.
+- Learned how custom exceptions improve error handling and API responses.
+
+---
+
+### Software Engineering Principles
+- Separation of Concerns (SoC)
+- Single Responsibility Principle (SRP)
+- Open/Closed Principle (OCP)
+- Encapsulation using private methods (`_method`)
+- Interface-based design using Abstract Base Classes
+
+---
+
+### AI Request Flow
+
+Application
+
+↓
+
+AIService
+
+↓
+
+Provider Registry
+
+↓
+
+Provider Cache
+
+↓
+
+Selected Provider
+
+↓
+
+Retry
+
+↓
+
+Fallback (if needed)
+
+↓
+
+LLM Response
