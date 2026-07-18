@@ -221,3 +221,149 @@ Fallback (if needed)
 ↓
 
 LLM Response
+
+# Week 2 - Day 6 (Concepts Learned)
+
+## 📅 Date
+18 July 2026
+
+---
+
+## 1. Retrieval-Augmented Generation (RAG)
+
+RAG combines semantic retrieval with an LLM.
+
+Flow:
+
+```
+Question
+    ↓
+Embedding
+    ↓
+Semantic Search
+    ↓
+Top-K Chunks
+    ↓
+Prompt
+    ↓
+LLM
+    ↓
+Answer
+```
+
+---
+
+## 2. Query Embeddings
+
+- Convert user questions into vectors.
+- Capture semantic meaning instead of exact words.
+- Used for vector similarity search.
+
+---
+
+## 3. Semantic Search
+
+Unlike SQL keyword search, semantic search retrieves information based on meaning using vector similarity.
+
+---
+
+## 4. Cosine Distance
+
+- Lower distance → Higher similarity.
+- Used to rank retrieved document chunks.
+
+---
+
+## 5. Top-K Retrieval
+
+Instead of sending the whole document to the LLM:
+
+- Retrieve only the most relevant chunks.
+- Faster responses.
+- Lower token usage.
+- Better answer quality.
+
+---
+
+## 6. Prompt Engineering
+
+A good RAG prompt contains:
+
+- Instructions
+- Retrieved Context
+- User Question
+
+This helps reduce hallucinations.
+
+---
+
+## 7. Hallucination Prevention
+
+The prompt instructs the LLM to:
+
+- Use only retrieved context.
+- Avoid outside knowledge.
+- Clearly state when information is unavailable.
+
+---
+
+## 8. AI Service Layer
+
+The application communicates with AI providers through `AIService`.
+
+Benefits:
+
+- Loose coupling
+- Easier maintenance
+- Provider independence
+
+---
+
+## 9. Provider Abstraction
+
+Every provider exposes the same interface.
+
+```
+Gemini
+Groq
+DeepSeek
+```
+
+The application can switch providers without changing business logic.
+
+---
+
+## 10. Retry & Fallback
+
+Retry handles temporary API failures.
+
+Fallback switches to another provider if the current provider fails.
+
+---
+
+## 11. Document Authorization
+
+Before retrieval:
+
+- Verify document exists.
+- Verify user belongs to the same organization.
+
+This prevents unauthorized access.
+
+---
+
+## 12. Clean Architecture
+
+Responsibilities:
+
+- Router → Handle HTTP requests
+- CRUD → Business logic
+- Prompt Builder → Build prompts
+- AIService → AI communication
+- Provider → Call LLM APIs
+
+---
+
+## Today's Key Learning
+
+Today I completed the first end-to-end RAG pipeline that converts a user's question into an embedding, retrieves relevant document chunks using semantic search, builds a grounded prompt, sends it to an LLM, and returns an AI-generated answer.

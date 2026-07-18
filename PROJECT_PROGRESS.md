@@ -171,3 +171,262 @@ User Query
 - Instance Caching
 - Retry vs Fallback
 - Clean Architecture for AI Services
+
+# Week 2 - Day 6 (Enterprise RAG Chat API)
+
+## 📅 Date
+18 July 2026
+
+---
+
+# Goal
+
+Build the complete Retrieval-Augmented Generation (RAG) chat pipeline that allows users to ask questions about uploaded documents.
+
+---
+
+# Features Completed
+
+## ✅ Prompt Builder
+
+Created a reusable prompt builder that:
+
+- Accepts the user's question
+- Accepts retrieved document chunks
+- Generates a structured prompt for the LLM
+- Restricts answers to the provided context
+- Prevents hallucinations by instructing the model to answer only from retrieved documents
+
+---
+
+## ✅ Chat Endpoint
+
+Implemented a secured chat endpoint.
+
+```
+POST /chat
+```
+
+Request:
+
+```json
+{
+    "document_id": 6,
+    "question": "What is this resume about?"
+}
+```
+
+Response:
+
+```json
+{
+    "answer": "..."
+}
+```
+
+---
+
+## ✅ Document Authorization
+
+Before generating an answer:
+
+- Verify document exists
+- Verify current user has access
+- Prevent users from accessing documents from other organizations
+
+---
+
+## ✅ Query Embedding
+
+Implemented semantic embedding generation for user queries using Voyage AI.
+
+Flow:
+
+User Question
+
+↓
+
+Voyage Embedding
+
+↓
+
+Vector Search
+
+---
+
+## ✅ Semantic Search
+
+Implemented vector similarity search using pgvector.
+
+Features:
+
+- Generate query embedding
+- Search only inside selected document
+- Retrieve Top-K relevant chunks
+- Return chunks ordered by cosine similarity
+
+---
+
+## ✅ Prompt Construction
+
+Combined retrieved chunks into a single context.
+
+Prompt contains:
+
+- Context
+- User Question
+- AI Instructions
+- Hallucination prevention rules
+
+---
+
+## ✅ AI Service Integration
+
+Integrated the Prompt Builder with the AI Service.
+
+Flow:
+
+Prompt
+
+↓
+
+AIService
+
+↓
+
+Provider Selection
+
+↓
+
+Retry
+
+↓
+
+Fallback
+
+↓
+
+Generated Answer
+
+---
+
+## ✅ End-to-End RAG Pipeline
+
+Successfully completed the full RAG workflow.
+
+```
+Upload PDF
+        ↓
+Extract Text
+        ↓
+Chunking
+        ↓
+Generate Embeddings
+        ↓
+Store in PostgreSQL + pgvector
+        ↓
+User Question
+        ↓
+Generate Query Embedding
+        ↓
+Semantic Search
+        ↓
+Retrieve Top Chunks
+        ↓
+Build Prompt
+        ↓
+AI Provider
+        ↓
+Final Answer
+```
+
+---
+
+# Testing
+
+Successfully tested using Swagger UI.
+
+Example:
+
+Question:
+
+```
+What is this resume about?
+```
+
+Result:
+
+- Retrieved relevant chunks
+- Generated accurate summary
+- Returned AI response successfully
+
+Status:
+
+✅ Working
+
+---
+
+# Bugs Fixed
+
+- Fixed authentication dependency imports
+- Fixed AIService method naming mismatch
+- Fixed provider configuration imports
+- Fixed embedding utility naming
+- Fixed semantic search function signature
+- Added document filtering during retrieval
+- Fixed pgvector search return type
+- Resolved Docker/PostgreSQL connection issues
+- Fixed AI provider invocation
+- Successfully completed end-to-end testing
+
+---
+
+# Concepts Learned
+
+- Retrieval-Augmented Generation (RAG)
+- Query Embeddings
+- Semantic Search
+- Cosine Distance using pgvector
+- Prompt Engineering
+- AI Service Layer
+- Provider Abstraction
+- Retry & Fallback Mechanism
+- Document-level Authorization
+- Dependency Injection in FastAPI
+- Clean Service Architecture
+
+---
+
+# Current Project Status
+
+Completed:
+
+- Authentication
+- RBAC
+- Organization Management
+- Document Upload
+- PDF Extraction
+- Manual Chunking
+- Embedding Generation
+- pgvector Integration
+- Semantic Search
+- Prompt Builder
+- AI Integration
+- Chat Endpoint
+
+Project Progress:
+
+██████████████████░░ 90%
+
+---
+
+# Next Goal (Week 2 - Day 7)
+
+- Design Chat Session model
+- Store conversation history
+- Save user messages
+- Save AI responses
+- Build chat CRUD
+- Support multiple conversations per document
+
+
