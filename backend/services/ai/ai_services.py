@@ -1,8 +1,9 @@
-from config import RAG_PROVIDERS
+from services.ai.config import RAG_PROVIDERS
 
-from services.ai.providers.gemini_provider import GeminiProvider
-from services.ai.providers.groq_provider import GroqProvider
-from services.ai.providers.deepseek_provider import DeepSeekProvider
+from .providers.gemini_provider import GeminiProvider
+from .providers.groq_provider import GroqProvider
+from .providers.deepseek_provider import DeepSeekProvider
+
 
 from utils.logger import logger
 from utils.retry import retry_request

@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from models.document_chunk import DocumentChunk
 
 
+
 def create_document_chunk(
     db: Session,
     document_id: int,
@@ -26,19 +27,21 @@ def create_document_chunk(
 
 
 
-
-
 def search_similar_chunks(
     db: Session,
+    document_id: int,
     query_embedding: list[float],
-    limit: int = 5
+    limit: int = 5,
 ):
     results = (
         db.query(
             DocumentChunk,
-            DocumentChunk.embedding.cosine_distance(query_embedding).label("score")
+            DocumentChunk.embedding.cosine_distance(query_embedding).label("score"),
         )
-        .order_by( DocumentChunk.embedding.cosine_distance(query_embedding)).limit(limit).all()
+        .filter(DocumentChunk.document_id == document_id)
+        .order_by(DocumentChunk.embedding.cosine_distance(query_embedding))
+        .limit(limit)
+        .all()
     )
 
-    return results
+    return [chunk for chunk, _ in results]
