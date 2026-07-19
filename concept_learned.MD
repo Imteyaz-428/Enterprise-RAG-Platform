@@ -367,3 +367,444 @@ Responsibilities:
 ## Today's Key Learning
 
 Today I completed the first end-to-end RAG pipeline that converts a user's question into an embedding, retrieves relevant document chunks using semantic search, builds a grounded prompt, sends it to an LLM, and returns an AI-generated answer.
+
+
+# Week 2 - Day 7
+# Concepts Learned
+
+---
+
+# 1. Why Service Layer?
+
+Initially, all business logic was inside the FastAPI router.
+
+Problems:
+
+- Large router files
+- Hard to maintain
+- Difficult to test
+- Mixed responsibilities
+
+Solution:
+
+Move business logic into Service classes.
+
+Final Flow:
+
+```
+Request
+    │
+    ▼
+Router
+    │
+    ▼
+Service
+    │
+    ▼
+CRUD
+    │
+    ▼
+Database
+```
+
+Router only handles HTTP requests.
+
+Service contains business logic.
+
+CRUD only performs database operations.
+
+---
+
+# 2. ChatService
+
+ChatService is the central orchestrator of the chat workflow.
+
+Responsibilities:
+
+- Create or load chat session
+- Save user messages
+- Retrieve conversation history
+- Retrieve relevant document chunks
+- Build prompt
+- Generate AI response
+- Save assistant response
+- Return final response
+
+ChatService does not know how embeddings, prompts, or AI providers work internally.
+
+It simply coordinates the entire workflow.
+
+---
+
+# 3. Separation of Concerns (SoC)
+
+Each class should have only one responsibility.
+
+RetrievalService
+
+Only responsible for:
+
+- Generate query embeddings
+- Perform semantic search
+- Return relevant chunks
+
+PromptService
+
+Only responsible for:
+
+- Format conversation history
+- Format retrieved context
+- Build final prompt
+
+AIService
+
+Only responsible for:
+
+- Call LLM providers
+- Retry failed requests
+- Fallback between providers
+- Return AI response
+
+ChatService
+
+Only responsible for orchestrating the workflow.
+
+---
+
+# 4. Router Responsibilities
+
+Router should only:
+
+- Receive HTTP request
+- Validate request
+- Authenticate user
+- Call Service layer
+- Return response
+
+Router should never contain business logic.
+
+---
+
+# 5. Conversation Persistence
+
+Instead of treating every request independently, conversations are stored permanently.
+
+Database stores:
+
+ChatSession
+
+Represents one conversation.
+
+ChatMessage
+
+Stores every user and assistant message.
+
+This allows:
+
+- Multi-turn conversations
+- Chat history
+- Continue previous sessions
+
+---
+
+# 6. Chat Session
+
+A ChatSession represents one conversation.
+
+Example:
+
+Chat Session
+
+```
+Leave Policy Discussion
+```
+
+Messages inside:
+
+```
+User:
+Explain leave policy.
+
+Assistant:
+...
+
+User:
+How many casual leaves?
+
+Assistant:
+...
+```
+
+Every conversation has its own unique session_id.
+
+---
+
+# 7. Session Lifecycle
+
+New Chat
+
+```
+No session_id
+        │
+        ▼
+Create Session
+```
+
+Existing Chat
+
+```
+session_id
+      │
+      ▼
+Load Session
+```
+
+This is how applications like ChatGPT maintain conversations.
+
+---
+
+# 8. Dependency Injection
+
+Instead of creating dependencies directly inside a class:
+
+```
+self.ai = AIService()
+```
+
+Use constructor injection.
+
+```
+def __init__(
+    ai_service=None
+)
+```
+
+Advantages:
+
+- Easier testing
+- Easier mocking
+- More flexible architecture
+- Better scalability
+
+---
+
+# 9. Enterprise Multi-Document Retrieval
+
+Old Architecture
+
+```
+Question
+      │
+      ▼
+document_id
+      │
+      ▼
+Search One PDF
+```
+
+Problem:
+
+The AI can only search inside one document.
+
+New Architecture
+
+```
+Question
+      │
+      ▼
+organization_id
+      │
+      ▼
+Search Every Document
+      │
+      ▼
+Top Matching Chunks
+```
+
+Benefits:
+
+- Search across all uploaded documents
+- Better user experience
+- Enterprise-ready retrieval
+
+---
+
+# 10. SQL JOIN
+
+DocumentChunk only stores:
+
+```
+document_id
+```
+
+Organization information is stored in:
+
+```
+Document
+```
+
+Therefore, searching by organization requires joining both tables.
+
+Concept:
+
+```
+DocumentChunk
+      │
+      ▼
+Document
+      │
+      ▼
+organization_id
+```
+
+JOIN allows filtering chunks using the organization's documents.
+
+---
+
+# 11. Chat Workflow
+
+Complete execution flow:
+
+```
+User Question
+        │
+        ▼
+Chat Router
+        │
+        ▼
+ChatService
+        │
+        ▼
+Create / Load Session
+        │
+        ▼
+Save User Message
+        │
+        ▼
+Retrieve Conversation History
+        │
+        ▼
+Generate Query Embedding
+        │
+        ▼
+Semantic Search
+        │
+        ▼
+Build Prompt
+        │
+        ▼
+AIService
+        │
+        ▼
+Gemini / Groq / DeepSeek
+        │
+        ▼
+Save Assistant Message
+        │
+        ▼
+Return Response
+```
+
+---
+
+# 12. Why Store Chat History?
+
+Benefits:
+
+- Follow-up questions
+- Context-aware responses
+- Better user experience
+- Conversation continuity
+- ChatGPT-like behavior
+
+Without history:
+
+Every request is independent.
+
+With history:
+
+The AI remembers previous messages.
+
+---
+
+# 13. Multi-Turn Conversation
+
+Example
+
+User
+
+```
+What is leave policy?
+```
+
+Assistant
+
+```
+...
+```
+
+User
+
+```
+How many casual leaves?
+```
+
+The second question depends on the previous conversation.
+
+This is called a Multi-Turn Conversation.
+
+---
+
+# 14. Orchestration Pattern
+
+ChatService follows the Orchestrator pattern.
+
+It does not perform every task itself.
+
+Instead, it coordinates multiple specialized services.
+
+```
+ChatService
+      │
+      ├──────────► RetrievalService
+      │
+      ├──────────► PromptService
+      │
+      └──────────► AIService
+```
+
+This keeps the code modular and maintainable.
+
+---
+
+# 15. Production Architecture
+
+Final architecture after today's work:
+
+```
+Frontend
+      │
+      ▼
+FastAPI Router
+      │
+      ▼
+ChatService
+      │
+      ├───────────────┐
+      ▼               ▼
+Session CRUD    RetrievalService
+      │               │
+      ▼               ▼
+Message CRUD   Vector Search
+                      │
+                      ▼
+               PromptService
+                      │
+                      ▼
+                 AIService
+                      │
+                      ▼
+        Gemini / Groq / DeepSeek
+```
+
+This architecture follows enterprise backend design principles and is scalable for future features.

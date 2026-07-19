@@ -430,3 +430,315 @@ Project Progress:
 - Support multiple conversations per document
 
 
+# Week 2 - Day 7
+## Date
+20 July 2026
+
+---
+
+# Goal
+
+Implement persistent conversation history and refactor the RAG pipeline into a clean service-layer architecture for a production-ready Enterprise Multi-Tenant RAG Platform.
+
+---
+
+# Completed Today
+
+## 1. Chat Session Management
+
+- Designed ChatSession model for persistent conversations.
+- Added session creation and retrieval logic.
+- Implemented automatic session creation for new conversations.
+- Added support for continuing existing conversations using session_id.
+- Implemented chat title generation from the first user query.
+
+---
+
+## 2. Chat Message Management
+
+- Designed ChatMessage model.
+- Stored both user and assistant messages.
+- Added conversation history persistence in PostgreSQL.
+- Implemented retrieval of recent chat history.
+
+---
+
+## 3. Service Layer Refactoring
+
+Created a dedicated Chat Service layer.
+
+```
+Router
+    ↓
+ChatService
+```
+
+Moved business logic out of the router.
+
+Responsibilities of ChatService:
+
+- Create or load chat sessions
+- Store user messages
+- Retrieve conversation history
+- Perform semantic search
+- Build RAG prompt
+- Generate AI response
+- Store assistant messages
+- Return API response
+
+---
+
+## 4. RetrievalService
+
+Created RetrievalService responsible for:
+
+- Generating query embeddings
+- Performing vector similarity search
+- Retrieving top matching chunks
+
+ChatService no longer communicates directly with CRUD functions.
+
+---
+
+## 5. PromptService
+
+Created PromptService.
+
+Responsibilities:
+
+- Build system prompt
+- Format conversation history
+- Format retrieved document context
+- Build final RAG prompt
+
+Prompt generation is now isolated from business logic.
+
+---
+
+## 6. AIService Integration
+
+Integrated existing AIService into ChatService.
+
+Features:
+
+- Multi-provider support
+- Automatic fallback
+- Retry mechanism
+- Response generation
+
+---
+
+## 7. Router Refactoring
+
+Simplified router responsibilities.
+
+Old router:
+
+- Semantic Search
+- Prompt Building
+- AI Calls
+- Session Handling
+
+New router:
+
+- Receive request
+- Authenticate user
+- Call ChatService
+- Return response
+
+---
+
+## 8. Multi-Document Retrieval
+
+Migrated retrieval architecture.
+
+Old architecture:
+
+Question
+→ document_id
+→ Search one document
+
+New architecture:
+
+Question
+→ organization_id
+→ Search across every uploaded document
+→ Retrieve Top-K chunks
+
+Updated search_similar_chunks() to:
+
+- Join DocumentChunk with Document
+- Filter by organization_id
+- Perform semantic search across all organization documents
+
+This converts the project into a true Enterprise Multi-Document RAG system.
+
+---
+
+## 9. Conversation API
+
+Implemented conversation workflow.
+
+Flow:
+
+User Question
+↓
+Create / Load Session
+↓
+Save User Message
+↓
+Retrieve History
+↓
+Semantic Search
+↓
+Prompt Generation
+↓
+AI Response
+↓
+Save Assistant Message
+↓
+Return Answer
+
+---
+
+## 10. Testing
+
+Successfully tested:
+
+- Authentication
+- Chat endpoint
+- Session creation
+- Multi-document retrieval
+- Prompt generation
+- AI response generation
+- Conversation persistence
+
+Example Response
+
+```json
+{
+    "session_id": 2,
+    "answer": "Your name is Imteyaz Alam."
+}
+```
+
+---
+
+# Architecture After Today
+
+```
+Frontend
+    │
+    ▼
+Router
+    │
+    ▼
+ChatService
+    │
+    ├───────────────┐
+    ▼               ▼
+Session CRUD    RetrievalService
+    │               │
+    ▼               ▼
+Message CRUD   Semantic Search
+                    │
+                    ▼
+             PromptService
+                    │
+                    ▼
+               AIService
+                    │
+                    ▼
+      Gemini / Groq / DeepSeek
+```
+
+---
+
+# Files Added
+
+```
+services/chat/chat_service.py
+services/chat/retrieval_service.py
+services/chat/prompt_service.py
+crud/chat_session.py
+crud/chat_message.py
+models/chat_session.py
+models/chat_message.py
+schemas/chat_session.py
+schemas/chat_message.py
+```
+
+---
+
+# Files Updated
+
+```
+router/chat.py
+schemas/chat.py
+crud/document_chunk.py
+services/ai/ai_services.py
+```
+
+---
+
+# Concepts Learned
+
+- Service Layer Architecture
+- Separation of Concerns (SoC)
+- Dependency Injection
+- Conversation Persistence
+- Multi-turn Chat
+- Session Management
+- Prompt Engineering Pipeline
+- Multi-Document Retrieval
+- SQL JOIN for Multi-Tenant Filtering
+- Enterprise Backend Architecture
+- Chat Orchestration Pattern
+
+---
+
+# Current Project Status
+
+Completed:
+
+- Authentication
+- RBAC
+- Organization Management
+- User Management
+- Document Upload
+- PDF Validation
+- Text Extraction
+- Manual Chunking
+- Voyage AI Embeddings
+- pgvector
+- Semantic Search
+- Prompt Builder
+- AI Provider Fallback
+- Multi-Provider Support
+- Chat Sessions
+- Conversation History
+- Enterprise ChatService
+- Multi-Document Retrieval
+
+Project Progress:
+
+≈ 80% Complete
+
+---
+
+# Next Tasks
+
+Week 2 - Day 8
+
+- Chat Session APIs
+  - GET /chat/sessions
+  - GET /chat/sessions/{id}
+  - DELETE /chat/sessions/{id}
+
+- Source Citations
+
+- Chat History Loading
+
+- React Chat Interface
+
+- Streaming Responses
