@@ -27,20 +27,34 @@ def create_document_chunk(
 
 
 
+from sqlalchemy.orm import Session
+
+from models.document import Document
+from models.document_chunk import DocumentChunk
+
+
 def search_similar_chunks(
     db: Session,
-    document_id: int,
+    organization_id: int,
     query_embedding: list[float],
-    limit: int = 5,
+    top_k: int = 5,
 ):
     results = (
         db.query(
             DocumentChunk,
             DocumentChunk.embedding.cosine_distance(query_embedding).label("score"),
         )
-        .filter(DocumentChunk.document_id == document_id)
-        .order_by(DocumentChunk.embedding.cosine_distance(query_embedding))
-        .limit(limit)
+        .join(
+            Document,
+            DocumentChunk.document_id == Document.id,
+        )
+        .filter(
+            Document.organization_id == organization_id,
+        )
+        .order_by(
+            DocumentChunk.embedding.cosine_distance(query_embedding),
+        )
+        .limit(top_k)
         .all()
     )
 

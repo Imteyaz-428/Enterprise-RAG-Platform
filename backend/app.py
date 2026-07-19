@@ -6,6 +6,8 @@ from models.organization import Organization
 from router.document import router as document_router
 from models.user import User
 from models.document_chunk import DocumentChunk
+from models.chat_session import ChatSession
+from models.chat_message import ChatMessage
 from router.chat import router as chat_router
 
 app = FastAPI()

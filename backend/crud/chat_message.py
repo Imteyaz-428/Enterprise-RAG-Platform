@@ -1,0 +1,39 @@
+from sqlalchemy.orm import Session
+
+from models.chat_message import ChatMessage
+
+
+def save_message(db: Session,session_id: int, role: str,content: str):
+    
+    message = ChatMessage(
+        session_id=session_id,
+        role=role,
+        content=content
+    )
+
+    db.add(message)
+    db.commit()
+    db.refresh(message)
+
+    return message
+
+def get_recent_messages( db: Session,session_id: int, limit: int = 8):
+    
+    messages = (
+        db.query(ChatMessage)
+        .filter(ChatMessage.session_id == session_id)
+        .order_by(ChatMessage.created_at.desc())
+        .limit(limit)
+        .all()
+    )
+
+    return list(reversed(messages))
+
+def get_session_messages( db: Session, session_id: int):
+    
+    return (
+        db.query(ChatMessage)
+        .filter(ChatMessage.session_id == session_id)
+        .order_by(ChatMessage.created_at)
+        .all()
+    )

@@ -3,3 +3,5 @@ RAG_PROVIDERS = [
     "groq",
     "deepseek"
 ]
+
+SEARCH_TOP_K = 5
