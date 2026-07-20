@@ -1,6 +1,6 @@
 from datetime import datetime
-
 from pydantic import BaseModel
+from typing import List
 
 
 class ChatSessionCreate(BaseModel):
@@ -16,3 +16,30 @@ class ChatSessionResponse(BaseModel):
 
     class Config:
         from_attributes = True
+        
+class ChatSessionListResponse(BaseModel):
+
+    id: int
+    title: str
+    created_at: datetime
+    class Config:
+        from_attributes = True
+        
+class ChatMessageResponse(BaseModel):
+
+    role: str
+    content: str
+    class Config:
+        from_attributes = True
+
+class ChatSessionDetailResponse(BaseModel):
+
+    id: int
+    title: str
+    created_at: datetime
+    messages: List[ChatMessageResponse]
+    class Config:
+        from_attributes = True
+        
+class MessageResponse(BaseModel):
+    message: str

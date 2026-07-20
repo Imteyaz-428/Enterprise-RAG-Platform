@@ -29,12 +29,14 @@ def get_session( db: Session,session_id: int,  organization_id: int, user_id: in
         )
         .first()
     ) 
-
-def get_user_sessions( db: Session, user_id: int):
+def get_user_sessions( db: Session, organization_id: int, user_id: int):
     
     return (
         db.query(ChatSession)
-        .filter(ChatSession.user_id == user_id)
+        .filter(
+            ChatSession.organization_id == organization_id,
+            ChatSession.user_id == user_id,
+        )
         .order_by(ChatSession.created_at.desc())
         .all()
     )

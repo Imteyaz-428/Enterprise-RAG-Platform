@@ -1,6 +1,6 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
-
+from crud.chat_session import get_user_sessions as get_user_sessions_db
 from crud.chat_message import (
     get_recent_messages,
     save_message,
@@ -13,6 +13,8 @@ from models.chat_session import ChatSession
 from services.ai.ai_services import AIService
 from services.chat.prompt_service import PromptService
 from services.chat.retrieval_service import RetrievalService
+from crud.chat_message import get_session_messages as get_session_messages_db
+from crud.chat_session import delete_session
 
 
 MAX_TITLE_LENGTH = 50
@@ -134,3 +136,74 @@ class ChatService:
             organization_id=organization_id,
             user_id=user_id,
         )
+        
+    def get_user_sessions(self, db: Session,organization_id: int, user_id: int):
+        
+        return get_user_sessions_db(
+            db=db,
+            organization_id=organization_id,
+            user_id=user_id,
+        )
+        
+        
+        
+    def get_chat_session(
+        self,
+        db: Session,
+        session_id: int,
+        organization_id: int,
+        user_id: int,
+    ):
+        session = get_session(
+            db=db,
+            session_id=session_id,
+            organization_id=organization_id,
+            user_id=user_id,
+        )
+
+        if session is None:
+            raise HTTPException(
+                status_code=404,
+                detail="Chat session not found or you do not have permission to access it.",
+            )
+
+        messages = get_session_messages_db(
+            db=db,
+            session_id=session.id,
+        )
+
+        return {
+            "id": session.id,
+            "title": session.title,
+            "created_at": session.created_at,
+            "messages": messages,
+        }
+        
+    def delete_chat_session(
+        self,
+        db: Session,
+        session_id: int,
+        organization_id: int,
+        user_id: int,
+    ):
+        session = get_session(
+            db=db,
+            session_id=session_id,
+            organization_id=organization_id,
+            user_id=user_id,
+        )
+
+        if session is None:
+            raise HTTPException(
+                status_code=404,
+                detail="Chat session not found or you do not have permission to access it.",
+            )
+
+        delete_session(
+            db=db,
+            session=session,
+        )
+
+        return {
+            "message": "Chat deleted successfully."
+        }
