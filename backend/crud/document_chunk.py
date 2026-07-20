@@ -42,6 +42,7 @@ def search_similar_chunks(
     results = (
         db.query(
             DocumentChunk,
+            Document,
             DocumentChunk.embedding.cosine_distance(query_embedding).label("score"),
         )
         .join(
@@ -58,4 +59,4 @@ def search_similar_chunks(
         .all()
     )
 
-    return [chunk for chunk, _ in results]
+    return results
