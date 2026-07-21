@@ -42,3 +42,69 @@ User Question
 → Generate Answer
 → Attach Source Citations
 → Return Response
+
+
+# Week 3 - Day 2: Streaming AI Responses
+
+## Concepts Learned
+
+### 1. Streaming Responses
+- Streaming sends the AI response in small chunks instead of waiting for the complete answer.
+- It improves user experience by reducing perceived latency.
+
+### 2. Server-Sent Events (SSE)
+- SSE is a one-way communication protocol where the server continuously sends data to the client over a single HTTP connection.
+- Used `text/event-stream` as the response content type.
+- Streamed three event types:
+  - `metadata`
+  - `token`
+  - `done`
+
+### 3. FastAPI StreamingResponse
+- `StreamingResponse` allows FastAPI to send data as it is generated.
+- It works with Python generators that use `yield`.
+
+### 4. Python Generators
+- Learned the difference between `return` and `yield`.
+- Used generators to stream AI tokens one by one.
+
+### 5. Provider Pattern Extension
+- Extended the `BaseProvider` interface by adding a `stream()` method.
+- Implemented streaming in Groq, Gemini, and DeepSeek providers while keeping `generate()` unchanged.
+
+### 6. AI Service Refactoring
+- Replaced provider-specific execution with a generic `_execute_with_fallback()` method.
+- Reused the same retry and fallback mechanism for both normal and streaming responses.
+
+### 7. Chat Service Refactoring
+- Created `_prepare_chat()` to remove duplicate logic.
+- Shared the same preparation flow between `chat()` and `chat_stream()`.
+
+### 8. Token Accumulation
+- Streamed tokens to the client while collecting them in memory.
+- Saved the complete assistant response to the database only after streaming finished.
+
+### 9. Streaming Metadata
+- Sent chat session information and source citations before AI tokens.
+- This allows the frontend to receive required metadata immediately.
+
+### 10. Production Streaming Architecture
+- Built a streaming pipeline:
+  - Client
+  - FastAPI Router
+  - ChatService
+  - AIService
+  - AI Provider (Groq/Gemini/DeepSeek)
+  - StreamingResponse
+  - Frontend
+
+## Interview Takeaways
+
+- Difference between normal API responses and streaming responses.
+- Why SSE is preferred over WebSockets for AI response streaming.
+- Why `yield` is used instead of `return`.
+- Benefits of `StreamingResponse` in FastAPI.
+- Why providers expose both `generate()` and `stream()` methods.
+- Why common logic was moved to `_prepare_chat()` and `_execute_with_fallback()`.
+- Why the complete response is stored only after streaming completes.
+```
