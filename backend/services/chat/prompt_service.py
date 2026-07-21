@@ -1,6 +1,7 @@
-from models.chat_message import ChatMessage
-from models.document_chunk import DocumentChunk
 from typing import List
+
+from models.chat_message import ChatMessage
+from services.chat.retrieval_result import RetrievalResult
 
 
 class PromptService:
@@ -25,7 +26,7 @@ Rules:
     def build_prompt(
         self,
         history: List[ChatMessage],
-        chunks: List[DocumentChunk],
+        chunks: List[RetrievalResult],
         question: str,
     ) -> str:
 
@@ -55,7 +56,10 @@ Answer
 =========================
 """.strip()
 
-    def _build_history(self, history: List[ChatMessage]) -> str:
+    def _build_history(
+        self,
+        history: List[ChatMessage],
+    ) -> str:
 
         if not history:
             return "No previous conversation."
@@ -69,16 +73,20 @@ Answer
 
         return "\n".join(conversation)
 
-    def _build_context( self,chunks: List[DocumentChunk]) -> str:
+    def _build_context(
+        self,
+        chunks: List[RetrievalResult],
+    ) -> str:
 
         if not chunks:
             return "No relevant context found."
 
         context = []
 
-        for index, chunk in enumerate(chunks, start=1):
+        for index, result in enumerate(chunks, start=1):
             context.append(
-                f"[Document {index}]\n{chunk.chunk_text}"
+                f"[Document {index}] ({result.document.original_filename})\n"
+                f"{result.chunk.chunk_text}"
             )
 
         return "\n\n".join(context)

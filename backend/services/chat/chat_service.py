@@ -69,20 +69,41 @@ class ChatService:
             session_id=session.id,
         )
 
-        chunks = self.retrieval_service.retrieve(
+        results = self.retrieval_service.retrieve(
             db=db,
             question=question,
             organization_id=organization_id,
         )
 
+        citations = []
+        vis = set()
+
+        for result in results:
+            key = (
+                result.document.id,
+                result.chunk.chunk_index,
+            )
+
+            if key in vis:
+                continue
+
+            vis.add(key)
+
+            citations.append(
+                {
+                    "document": result.document.original_filename,
+                    "chunk_index": result.chunk.chunk_index,
+                }
+            )
+
         prompt = self.prompt_service.build_prompt(
             history=history,
-            chunks=chunks,
+            chunks=results,
             question=question,
         )
 
         answer = self.ai_service.generate_answer(
-            prompt=prompt
+            prompt=prompt,
         )
 
         save_message(
@@ -95,6 +116,7 @@ class ChatService:
         return {
             "session_id": session.id,
             "answer": answer,
+            "citations": citations,
         }
 
     def _generate_title(
