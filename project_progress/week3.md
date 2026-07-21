@@ -17,3 +17,26 @@
 - ✅ Semantic search using pgvector
 - ✅ Multi-provider LLM fallback
 - ✅ Source citations
+
+
+# Week 3 - Day 2: Streaming AI Responses
+
+## Completed
+
+- Added streaming support to all AI providers (Groq, Gemini, DeepSeek).
+- Extended `BaseProvider` with a `stream()` method.
+- Refactored `AIService` to support both normal and streaming responses.
+- Added `stream_answer()` with provider fallback support.
+- Refactored `ChatService` using `_prepare_chat()` to reduce duplicate code.
+- Implemented `chat_stream()` for real-time response streaming.
+- Streamed source citations and session metadata using Server-Sent Events (SSE).
+- Added `/chat/stream` endpoint using FastAPI `StreamingResponse`.
+- Successfully tested end-to-end streaming with Groq.
+
+## Current Status
+
+- Multi-provider AI with retry & fallback
+- Enterprise RAG Chat
+- Source Citations
+- Real-time Streaming Responses (SSE)
+```
