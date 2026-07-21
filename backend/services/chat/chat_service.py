@@ -15,6 +15,7 @@ from services.chat.prompt_service import PromptService
 from services.chat.retrieval_service import RetrievalService
 from crud.chat_message import get_session_messages as get_session_messages_db
 from crud.chat_session import delete_session
+import json
 
 
 MAX_TITLE_LENGTH = 50
@@ -41,6 +42,77 @@ class ChatService:
         )
 
     def chat(
+        self,
+        db: Session,
+        question: str,
+        organization_id: int,
+        user_id: int,
+        session_id: int | None = None,
+    ):
+
+        session, prompt, citations = self._prepare_chat(
+            db=db,
+            question=question,
+            organization_id=organization_id,
+            user_id=user_id,
+            session_id=session_id,
+        )
+
+        answer = self.ai_service.generate_answer(
+            prompt=prompt,
+        )
+
+        save_message(
+            db=db,
+            session_id=session.id,
+            role="assistant",
+            content=answer,
+        )
+
+        return {
+            "session_id": session.id,
+            "answer": answer,
+            "citations": citations,
+        }
+
+    def _generate_title(self,question: str,) -> str:
+
+        return question.strip()[:MAX_TITLE_LENGTH]
+
+    def _get_or_create_session(
+        self,
+        db: Session,
+        session_id: int | None,
+        question: str,
+        organization_id: int,
+        user_id: int,
+    ) -> ChatSession:
+
+        if session_id is not None:
+
+            session = get_session(
+                db=db,
+                session_id=session_id,
+                organization_id=organization_id,
+                user_id=user_id,
+            )
+
+            if session is None:
+                raise HTTPException(
+                    status_code=404,
+                    detail="Chat session not found or you do not have permission to access it.",
+                )
+
+            return session
+
+        return create_session(
+            db=db,
+            title=self._generate_title(question),
+            organization_id=organization_id,
+            user_id=user_id,
+        )
+        
+    def _prepare_chat(
         self,
         db: Session,
         question: str,
@@ -79,6 +151,7 @@ class ChatService:
         vis = set()
 
         for result in results:
+
             key = (
                 result.document.id,
                 result.chunk.chunk_index,
@@ -102,63 +175,8 @@ class ChatService:
             question=question,
         )
 
-        answer = self.ai_service.generate_answer(
-            prompt=prompt,
-        )
-
-        save_message(
-            db=db,
-            session_id=session.id,
-            role="assistant",
-            content=answer,
-        )
-
-        return {
-            "session_id": session.id,
-            "answer": answer,
-            "citations": citations,
-        }
-
-    def _generate_title(
-        self,
-        question: str,
-    ) -> str:
-
-        return question.strip()[:MAX_TITLE_LENGTH]
-
-    def _get_or_create_session(
-        self,
-        db: Session,
-        session_id: int | None,
-        question: str,
-        organization_id: int,
-        user_id: int,
-    ) -> ChatSession:
-
-        if session_id is not None:
-
-            session = get_session(
-                db=db,
-                session_id=session_id,
-                organization_id=organization_id,
-                user_id=user_id,
-            )
-
-            if session is None:
-                raise HTTPException(
-                    status_code=404,
-                    detail="Chat session not found or you do not have permission to access it.",
-                )
-
-            return session
-
-        return create_session(
-            db=db,
-            title=self._generate_title(question),
-            organization_id=organization_id,
-            user_id=user_id,
-        )
-        
+        return session, prompt, citations
+            
     def get_user_sessions(self, db: Session,organization_id: int, user_id: int):
         
         return get_user_sessions_db(
@@ -229,3 +247,58 @@ class ChatService:
         return {
             "message": "Chat deleted successfully."
         }
+        
+    def chat_stream(
+        self,
+        db: Session,
+        question: str,
+        organization_id: int,
+        user_id: int,
+        session_id: int | None = None,
+    ):
+
+        session, prompt, citations = self._prepare_chat(
+            db=db,
+            question=question,
+            organization_id=organization_id,
+            user_id=user_id,
+            session_id=session_id,
+        )
+
+        yield (
+            f"event: metadata\n"
+            f"data: {json.dumps({'session_id': session.id, 'citations': citations})}\n\n"
+        )
+
+        tokens = []
+
+        try:
+
+            for token in self.ai_service.stream_answer(
+                prompt=prompt,
+            ):
+
+                tokens.append(token)
+
+                yield (
+                    f"event: token\n"
+                    f"data: {token}\n\n"
+                )
+
+        finally:
+
+            if tokens:
+
+                answer = "".join(tokens)
+
+                save_message(
+                    db=db,
+                    session_id=session.id,
+                    role="assistant",
+                    content=answer,
+                )
+
+        yield (
+            "event: done\n"
+            "data: {}\n\n"
+        )

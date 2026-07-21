@@ -32,3 +32,6 @@
 2026-07-21 21:14:17,647 | INFO | gemini generated response successfully.
 2026-07-21 22:47:19,636 | INFO | Using AI Provider: gemini
 2026-07-21 22:47:25,746 | INFO | gemini generated response successfully.
+2026-07-22 00:55:29,809 | WARNING | gemini failed: Can't instantiate abstract class GeminiProvider without an implementation for abstract method 'stream'
+2026-07-22 00:55:29,824 | INFO | Using AI Provider: groq
+2026-07-22 00:55:29,824 | INFO | groq generated response successfully.

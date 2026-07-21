@@ -10,6 +10,7 @@ from schemas.chat import ChatRequest, ChatResponse
 from schemas.chat_session import ChatSessionListResponse,ChatSessionDetailResponse
 from services.chat.chat_service import ChatService
 from schemas.chat_session import MessageResponse
+from fastapi.responses import StreamingResponse
 
 router = APIRouter(
     prefix="/chat",
@@ -36,6 +37,25 @@ def chat(
         session_id=request.session_id,
     )
 
+@router.post("/stream")
+def chat_stream(
+    request: ChatRequest,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
+):
+
+    stream = chat_service.chat_stream(
+        db=db,
+        question=request.question,
+        organization_id=current_user.organization_id,
+        user_id=current_user.id,
+        session_id=request.session_id,
+    )
+
+    return StreamingResponse(
+        stream,
+        media_type="text/event-stream",
+    )
 
 @router.get(
     "/sessions",

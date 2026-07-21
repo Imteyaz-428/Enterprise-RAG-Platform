@@ -1,5 +1,5 @@
 from services.ai.config import RAG_PROVIDERS
-
+from typing import Iterator
 from .providers.gemini_provider import GeminiProvider
 from .providers.groq_provider import GroqProvider
 from .providers.deepseek_provider import DeepSeekProvider
@@ -49,11 +49,12 @@ class AIService:
 
         return provider
 
-    def _generate_with_fallback(
+    def _execute_with_fallback(
         self,
         providers: list[str],
-        prompt: str
-    ) -> str:
+        prompt: str,
+        method_name: str
+    ):
 
         for provider_name in providers:
 
@@ -65,8 +66,13 @@ class AIService:
                     f"Using AI Provider: {provider_name}"
                 )
 
+                method = getattr(
+                    provider,
+                    method_name
+                )
+
                 response = retry_request(
-                    provider.generate,
+                    method,
                     prompt
                 )
 
@@ -82,7 +88,9 @@ class AIService:
                     f"{provider_name} failed: {e}"
                 )
 
-        logger.error("All AI providers failed.")
+        logger.error(
+            "All AI providers failed."
+        )
 
         raise AIProviderError(
             "All AI providers failed."
@@ -93,7 +101,24 @@ class AIService:
         prompt: str
     ) -> str:
 
-        return self._generate_with_fallback(
-            RAG_PROVIDERS,
-            prompt
+        return self._execute_with_fallback(
+            providers=RAG_PROVIDERS,
+            prompt=prompt,
+            method_name="generate"
         )
+    
+    
+    def stream_answer(
+
+        self,
+
+        prompt: str
+
+    ) -> Iterator[str]:
+
+        stream = self._execute_with_fallback(
+            providers=RAG_PROVIDERS,
+            prompt=prompt,
+            method_name="stream"
+        )
+        yield from stream

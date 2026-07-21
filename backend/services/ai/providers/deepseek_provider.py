@@ -1,5 +1,5 @@
 import os
-
+from typing import Iterator
 from dotenv import load_dotenv
 from openai import OpenAI
 
@@ -32,3 +32,43 @@ class DeepSeekProvider(BaseProvider):
         )
 
         return response.choices[0].message.content
+    
+    def stream(
+
+        self,
+
+        prompt: str,
+
+    ) -> Iterator[str]:
+
+        stream = self.client.chat.completions.create(
+
+            model=self.model,
+
+            messages=[
+
+                {
+
+                    "role": "user",
+
+                    "content": prompt,
+
+                }
+
+            ],
+
+            stream=True,
+
+        )
+
+        for chunk in stream:
+
+            if (
+
+                chunk.choices
+
+                and chunk.choices[0].delta.content
+
+            ):
+
+                yield chunk.choices[0].delta.content
