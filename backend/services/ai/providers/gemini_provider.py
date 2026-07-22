@@ -1,4 +1,5 @@
 import os
+from typing import Iterator
 
 from dotenv import load_dotenv
 from google import genai
@@ -18,11 +19,29 @@ class GeminiProvider(BaseProvider):
 
         self.model = "gemini-2.5-flash"
 
-    def generate(self, prompt: str) -> str:
+    def generate(
+        self,
+        prompt: str,
+    ) -> str:
 
         response = self.client.models.generate_content(
             model=self.model,
-            contents=prompt
+            contents=prompt,
         )
 
         return response.text
+
+    def stream(
+        self,
+        prompt: str,
+    ) -> Iterator[str]:
+
+        response = self.client.models.generate_content_stream(
+            model=self.model,
+            contents=prompt,
+        )
+
+        for chunk in response:
+
+            if chunk.text:
+                yield chunk.text

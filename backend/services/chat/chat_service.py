@@ -9,6 +9,7 @@ from crud.chat_session import (
     create_session,
     get_session,
 )
+from utils.logger import logger
 from models.chat_session import ChatSession
 from services.ai.ai_services import AIService
 from services.chat.prompt_service import PromptService
@@ -16,6 +17,10 @@ from services.chat.retrieval_service import RetrievalService
 from crud.chat_message import get_session_messages as get_session_messages_db
 from crud.chat_session import delete_session
 import json
+from services.cache.redis_service import RedisService
+import hashlib
+
+
 
 
 MAX_TITLE_LENGTH = 50
@@ -40,6 +45,7 @@ class ChatService:
         self.ai_service = (
             ai_service or AIService()
         )
+        self.redis = RedisService()
 
     def chat(
         self,
@@ -57,6 +63,31 @@ class ChatService:
             user_id=user_id,
             session_id=session_id,
         )
+        cache_key = self._get_cache_key(
+            organization_id=organization_id,
+            question=question,
+        )
+
+        cached = self.redis.get(
+            cache_key
+        )
+
+        if cached:
+
+            save_message(
+                db=db,
+                session_id=session.id,
+                role="assistant",
+                content=cached["answer"],
+            )
+
+            return {
+                "session_id": session.id,
+                "answer": cached["answer"],
+                "citations": cached["citations"],
+            }
+
+
 
         answer = self.ai_service.generate_answer(
             prompt=prompt,
@@ -69,16 +100,39 @@ class ChatService:
             content=answer,
         )
 
-        return {
-            "session_id": session.id,
+        response = {
             "answer": answer,
             "citations": citations,
+        }
+
+        self.redis.set(
+            cache_key,
+            response,
+        )
+
+        return {
+            "session_id": session.id,
+            **response,
         }
 
     def _generate_title(self,question: str,) -> str:
 
         return question.strip()[:MAX_TITLE_LENGTH]
 
+
+
+    def _get_cache_key( self,  organization_id: int,question: str) -> str:
+
+        key = (
+            f"{organization_id}:"
+            f"{question.strip().lower()}"
+        )
+
+        return hashlib.sha256( key.encode()).hexdigest()
+        
+        
+        
+        
     def _get_or_create_session(
         self,
         db: Session,
@@ -264,6 +318,43 @@ class ChatService:
             user_id=user_id,
             session_id=session_id,
         )
+        cache_key = self._get_cache_key(
+            organization_id=organization_id,
+            question=question,
+        )
+
+        cached = self.redis.get(
+            cache_key,
+        )
+
+        if cached:
+            logger.info("Redis Cache Hit")
+            save_message(
+                db=db,
+                session_id=session.id,
+                role="assistant",
+                content=cached["answer"],
+            )
+
+            yield (
+                f"event: metadata\n"
+                f"data: {json.dumps({'session_id': session.id, 'citations': cached['citations']})}\n\n"
+            )
+
+            for token in cached["answer"].split():
+
+                yield (
+                    f"event: token\n"
+                    f"data: {token} \n\n"
+                )
+
+            yield (
+                "event: done\n"
+                "data: {}\n\n"
+            )
+
+            return
+        logger.info("Redis Cache Miss")
 
         yield (
             f"event: metadata\n"
@@ -296,6 +387,13 @@ class ChatService:
                     session_id=session.id,
                     role="assistant",
                     content=answer,
+                )
+                self.redis.set(
+                    cache_key,
+                    {
+                        "answer": answer,
+                        "citations": citations,
+                    },
                 )
 
         yield (
