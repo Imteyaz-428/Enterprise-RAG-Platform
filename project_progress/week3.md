@@ -63,3 +63,27 @@
 - Source Citations
 - Streaming AI Responses
 - Redis Caching
+
+
+# Week 3 - Day 4: Background Tasks
+
+## Completed
+
+- Implemented FastAPI Background Tasks.
+- Moved document processing to a separate background service.
+- Created a separate database session using `SessionLocal`.
+- Added document processing status.
+- Status values:
+  - processing
+  - completed
+  - failed
+- Updated document status after processing.
+- Added error handling and logging.
+- Created API to get document details and status.
+- Successfully tested background processing.
+
+## Current Status
+
+- Background document processing
+- Document status tracking
+- Ready for frontend polling
