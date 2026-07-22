@@ -161,3 +161,40 @@ Did not cache:
 ### 9. Cache Invalidation
 - Learned that cached data becomes outdated after new document uploads.
 - Simple solution: clear Redis after document upload.
+
+# Week 3 - Day 4: Background Tasks
+
+## Concepts Learned
+
+### 1. What are Background Tasks?
+Background Tasks allow long-running work to execute after sending the response to the client.
+
+### 2. Why Use Background Tasks?
+- Faster API response.
+- Better user experience.
+- Heavy processing runs in the background.
+
+### 3. Why Create a New Database Session?
+The request database session is closed after the response. A background task should create its own database session using `SessionLocal`.
+
+### 4. Document Processing Flow
+- Upload PDF
+- Save document
+- Return response
+- Extract text
+- Create chunks
+- Generate embeddings
+- Save chunks
+- Update status
+
+### 5. Document Status
+Added three document states:
+- processing
+- completed
+- failed
+
+### 6. Error Handling
+Used try-except-finally to handle processing errors and always close the database session.
+
+### 7. Polling
+The frontend can repeatedly check the document status until processing is completed.
