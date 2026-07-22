@@ -40,3 +40,26 @@
 - Source Citations
 - Real-time Streaming Responses (SSE)
 ```
+
+
+# Week 3 - Day 3: Redis Caching
+
+## Completed
+
+- Installed and configured Redis.
+- Ran Redis using Docker.
+- Created `RedisService` for Redis operations.
+- Added `get()`, `set()`, and `delete()` methods.
+- Integrated Redis into `ChatService`.
+- Implemented cache key generation using SHA-256.
+- Cached normal chat responses.
+- Cached streaming chat responses.
+- Added Redis cache hit/miss logging.
+- Successfully tested Redis caching.
+
+## Current Status
+
+- Enterprise RAG Chat
+- Source Citations
+- Streaming AI Responses
+- Redis Caching
