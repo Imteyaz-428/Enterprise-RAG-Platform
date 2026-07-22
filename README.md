@@ -337,7 +337,7 @@ Return Response with Citations
 
 ---
 
-# 📸 Screenshots
+<!-- # 📸 Screenshots
 
 > *(Add screenshots after completing the frontend.)*
 
@@ -369,6 +369,7 @@ Return Response with Citations
 
 <img width="100%" src="screenshots/swagger.png">
 
+--- -->
 ---
 
 # 📊 Project Status
