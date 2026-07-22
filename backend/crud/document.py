@@ -27,3 +27,15 @@ def get_accessible_document( db: Session, document_id: int, organization_id: int
         )
         .first()
     )
+    
+def update_document_status( db,document_id: int, status: str):
+
+    document = get_document_by_id( db, document_id )
+
+    if document is None:
+        return None
+
+    document.status = status
+    db.commit()
+    db.refresh(document)
+    return document

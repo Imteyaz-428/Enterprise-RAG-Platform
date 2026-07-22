@@ -10,7 +10,7 @@ class DocumentResponse(BaseModel):
     uploaded_at: datetime
     organization_id: int
     uploaded_by: int
-
+    status: str
     model_config = ConfigDict(from_attributes=True)
     
 class DocumentUpdate(BaseModel):

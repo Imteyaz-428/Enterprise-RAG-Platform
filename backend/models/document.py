@@ -30,6 +30,7 @@ class Document(Base):
         ForeignKey("users.id"),
         nullable=False
     )
+    status = Column( String,nullable=False,default="processing")
 
     organization = relationship("Organization",back_populates="documents")
     uploader = relationship("User", back_populates="documents")
