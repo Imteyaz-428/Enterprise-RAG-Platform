@@ -108,3 +108,56 @@ User Question
 - Why common logic was moved to `_prepare_chat()` and `_execute_with_fallback()`.
 - Why the complete response is stored only after streaming completes.
 ```
+
+# Week 3 - Day 3: Redis Caching
+
+## Concepts Learned
+
+### 1. What is Redis?
+- Redis is an in-memory key-value database.
+- It is mainly used for caching and fast data access.
+
+### 2. Why Use Redis?
+- Reduces repeated AI calls.
+- Improves response time.
+- Reduces API cost.
+- Improves user experience.
+
+### 3. Cache Hit
+- Data is found in Redis.
+- Return the cached response without calling the AI model.
+
+### 4. Cache Miss
+- Data is not found in Redis.
+- Generate a new response using the RAG pipeline.
+- Store the response in Redis.
+
+### 5. Cache Key
+- Created a unique cache key using:
+  - Organization ID
+  - User Question
+- Used SHA-256 hashing to generate a fixed-length key.
+
+### 6. Redis Service
+Created a reusable Redis service with:
+- get()
+- set()
+- delete()
+
+### 7. Chat Response Caching
+Cached:
+- AI Answer
+- Source Citations
+
+Did not cache:
+- Chat History
+- Embeddings
+- Documents
+
+### 8. Streaming Cache
+- Added Redis support to both normal chat and streaming chat.
+- Cached responses can also be streamed to the frontend.
+
+### 9. Cache Invalidation
+- Learned that cached data becomes outdated after new document uploads.
+- Simple solution: clear Redis after document upload.
