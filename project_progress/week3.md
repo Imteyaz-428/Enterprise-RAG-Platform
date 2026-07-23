@@ -87,3 +87,23 @@
 - Background document processing
 - Document status tracking
 - Ready for frontend polling
+
+# Day 4 - Dockerization
+
+## Completed
+
+- Added Docker support for the FastAPI backend.
+- Created a Dockerfile for the application.
+- Created docker-compose.yml.
+- Containerized:
+  - FastAPI
+  - PostgreSQL (pgvector)
+  - Redis
+- Configured environment variables using `.env`.
+- Mounted project files using Docker volumes.
+- Exposed backend on port 8000.
+- Added PostgreSQL health check.
+- Added Redis health check.
+- Successfully built Docker image.
+- Successfully ran the complete application using Docker Compose.
+- Verified all APIs work correctly inside Docker.
