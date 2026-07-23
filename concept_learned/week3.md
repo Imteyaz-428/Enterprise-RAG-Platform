@@ -198,3 +198,47 @@ Used try-except-finally to handle processing errors and always close the databas
 
 ### 7. Polling
 The frontend can repeatedly check the document status until processing is completed.
+
+# Day 4 - Concepts Learned
+
+## Docker
+
+- What is Docker
+- Docker Image
+- Docker Container
+- Dockerfile
+- Docker Build Context
+- Docker Compose
+- Docker Volumes
+- Port Mapping
+- Environment Variables
+- Container Networking
+
+## Dockerfile
+
+- FROM
+- WORKDIR
+- COPY
+- RUN
+- EXPOSE
+- CMD
+
+## Docker Compose
+
+- Services
+- Volumes
+- env_file
+- depends_on
+- restart policy
+
+## Health Checks
+
+- PostgreSQL health check using `pg_isready`
+- Redis health check using `redis-cli ping`
+
+## Benefits
+
+- Same environment on every machine.
+- Easy deployment.
+- Isolated dependencies.
+- Simple multi-container setup.
