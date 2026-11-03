@@ -6,7 +6,7 @@ import ChatSidebar from "../../components/chat/ChatSidebar";
 import ChatWindow from "../../components/chat/ChatWindow";
 import ChatInput from "../../components/chat/ChatInput";
 import EmptyChat from "../../components/chat/EmptyChat";
-
+import MobileChatDrawer, { MobileChatBar } from "../../components/chat/MobileChatDrawer";
 import {
   streamChat,
   getSessions,
@@ -19,6 +19,7 @@ function Chat() {
   const [messages, setMessages] = useState([]);
   const [currentSessionId, setCurrentSessionId] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const pendingCitations = useRef([]);
 
@@ -41,6 +42,7 @@ function Chat() {
 
       setCurrentSessionId(sessionId);
       setMessages(data.messages);
+      setDrawerOpen(false);
     } catch {
       toast.error("Failed to load chat.");
     }
@@ -156,40 +158,49 @@ function Chat() {
   };
 
   return (
-    <Layout>
-      <div className="h-[calc(100vh-110px)] overflow-hidden rounded-2xl border bg-white shadow-sm">
-        <div className="flex h-full">
-          <div className="w-[220px] shrink-0 border-r bg-gray-50">
-            <ChatSidebar
-              sessions={sessions}
-              currentSessionId={currentSessionId}
-              onSelect={loadSession}
-              onDelete={handleDelete}
-              onNewChat={handleNewChat}
-            />
+  <Layout>
+    <div className="h-[calc(100dvh-96px)] overflow-hidden rounded-xl border bg-white shadow-sm md:h-[calc(100dvh-110px)] md:rounded-2xl">
+      <div className="relative flex h-full">
+        <div className="hidden w-[220px] shrink-0 border-r bg-gray-50 md:block">
+          <ChatSidebar
+            sessions={sessions}
+            currentSessionId={currentSessionId}
+            onSelect={loadSession}
+            onDelete={handleDelete}
+            onNewChat={handleNewChat}
+          />
+        </div>
+
+        <MobileChatDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
+          <ChatSidebar
+            sessions={sessions}
+            currentSessionId={currentSessionId}
+            onSelect={loadSession}
+            onDelete={handleDelete}
+            onNewChat={handleNewChat}
+          />
+        </MobileChatDrawer>
+
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col bg-white">
+          <MobileChatBar
+            onMenu={() => setDrawerOpen(true)}
+            onNewChat={handleNewChat}
+          />
+
+          <div className="min-h-0 flex-1">
+            {messages.length === 0 ? (
+              <EmptyChat />
+            ) : (
+              <ChatWindow messages={messages} loading={loading} />
+            )}
           </div>
 
-          <div className="flex min-h-0 flex-1 flex-col bg-white">
-            <div className="min-h-0 flex-1">
-              {messages.length === 0 ? (
-                <EmptyChat />
-              ) : (
-                <ChatWindow
-                  messages={messages}
-                  loading={loading}
-                />
-              )}
-            </div>
-
-            <ChatInput
-              loading={loading}
-              onSend={handleSend}
-            />
-          </div>
+          <ChatInput loading={loading} onSend={handleSend} />
         </div>
       </div>
-    </Layout>
-  );
+    </div>
+  </Layout>
+);
 }
 
 export default Chat;
