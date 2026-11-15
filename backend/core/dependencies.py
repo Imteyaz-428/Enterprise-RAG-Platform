@@ -36,9 +36,28 @@ def get_current_user( token: str = Depends(oauth2_scheme),db: Session = Depends(
 
 
 
-def get_current_admin(current_user: User = Depends(get_current_user)):
+PLATFORM_ADMIN_ROLES = {"super_admin", "platform_admin"}
 
-    if current_user.role.value != "admin":
+
+def is_platform_admin(user: User) -> bool:
+    if not user or not user.role:
+        return False
+    role_val = user.role.value if hasattr(user.role, "value") else str(user.role)
+    return role_val.lower() in PLATFORM_ADMIN_ROLES
+
+
+def require_platform_admin(current_user: User = Depends(get_current_user)) -> User:
+    if not is_platform_admin(current_user):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Platform administrator access required"
+        )
+    return current_user
+
+
+def get_current_admin(current_user: User = Depends(get_current_user)):
+    role_val = current_user.role.value if hasattr(current_user.role, "value") else str(current_user.role)
+    if role_val != "admin" and not is_platform_admin(current_user):
         raise HTTPException(
             status_code=403,
             detail="Admin access required"
@@ -51,11 +70,13 @@ def get_current_admin(current_user: User = Depends(get_current_user)):
 def require_role(required_role: UserRole):
 
     def role_checker(current_user: User = Depends(get_current_user)):
+        role_val = current_user.role.value if hasattr(current_user.role, "value") else str(current_user.role)
+        req_val = required_role.value if hasattr(required_role, "value") else str(required_role)
 
-        if current_user.role != required_role:
+        if role_val != req_val and not is_platform_admin(current_user):
             raise HTTPException(
                 status_code=403,
-                detail=f"{required_role.value} access required"
+                detail=f"{req_val} access required"
             )
 
         return current_user

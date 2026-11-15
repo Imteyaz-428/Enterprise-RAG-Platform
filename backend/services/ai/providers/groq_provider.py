@@ -1,26 +1,30 @@
 import os
 from typing import Iterator
-from dotenv import load_dotenv
 from groq import Groq
-from typing import Iterator
 
 from services.ai.providers.base_provider import BaseProvider
+from services.ai.config import AI_REQUEST_TIMEOUT, load_environment
 
-load_dotenv()
+load_environment()
 
 
 class GroqProvider(BaseProvider):
 
     def __init__(self):
+        api_key = (os.getenv("GROQ_API_KEY") or "").strip()
+        if not api_key:
+            raise ValueError("GROQ_API_KEY is not configured")
+
 
         self.client = Groq(
-            api_key=os.getenv("GROQ_API_KEY")
+            api_key=api_key,
+            timeout=AI_REQUEST_TIMEOUT,
         )
 
-        self.model = "llama-3.3-70b-versatile"
+        self.model = os.getenv("GROQ_MODEL", "qwen/qwen3.8-27b")
+
 
     def generate(self, prompt: str) -> str:
-
         response = self.client.chat.completions.create(
             model=self.model,
             messages=[
@@ -31,71 +35,31 @@ class GroqProvider(BaseProvider):
             ]
         )
 
+        if not response or not response.choices or not response.choices[0].message.content or not response.choices[0].message.content.strip():
+            raise ValueError("Groq returned empty or null content")
+
         return response.choices[0].message.content
+
     def stream(
-
         self,
-
         prompt: str,
-
     ) -> Iterator[str]:
-
         stream = self.client.chat.completions.create(
-
             model=self.model,
-
             messages=[
-
                 {
-
                     "role": "user",
-
                     "content": prompt,
-
                 }
-
             ],
-
             stream=True,
-
         )
 
         for chunk in stream:
-
             if (
-
-                chunk.choices
-
+                chunk
+                and chunk.choices
+                and chunk.choices[0].delta
                 and chunk.choices[0].delta.content
-
             ):
-
                 yield chunk.choices[0].delta.content
-                
-    
-
-class GeminiProvider(BaseProvider):
-
-    ...
-
-    def stream(
-
-        self,
-
-        prompt: str,
-
-    ) -> Iterator[str]:
-
-        response = self.client.models.generate_content_stream(
-
-            model=self.model,
-
-            contents=prompt,
-
-        )
-
-        for chunk in response:
-
-            if chunk.text:
-
-                yield chunk.text

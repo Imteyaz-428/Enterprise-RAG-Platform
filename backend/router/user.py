@@ -51,25 +51,33 @@ def update_password(
         new_password=data.new_password,
     )
     
-@router.put( "/{user_id}",response_model=UserResponse, status_code=status.HTTP_200_OK)
-def update_existing_user(user_id: int, user_update: UserUpdate, db: Session = Depends(get_db),current_user: User = Depends(get_current_user)):
-    
-    if (current_user.role.value != "admin" and current_user.id != user_id ):
+@router.put("/{user_id}", response_model=UserResponse, status_code=status.HTTP_200_OK)
+def update_existing_user(
+    user_id: int,
+    user_update: UserUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    if current_user.role.value != "admin" and current_user.id != user_id:
         raise HTTPException(
             status_code=403,
             detail="You can only update your own profile."
         )
-    
+
     return update_user(
         db=db,
         user_id=user_id,
-        user_update=user_update
+        user_update=user_update,
+        organization_id=current_user.organization_id,
     )
-    
 
-@router.delete( "/{user_id}", status_code=status.HTTP_200_OK)
-def delete_existing_user( user_id: int,db: Session = Depends(get_db),current_user: User = Depends(require_role(UserRole.ADMIN))):
-    
+
+@router.delete("/{user_id}", status_code=status.HTTP_200_OK)
+def delete_existing_user(
+    user_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_role(UserRole.ADMIN)),
+):
     if current_user.id == user_id:
         raise HTTPException(
             status_code=400,
@@ -77,7 +85,8 @@ def delete_existing_user( user_id: int,db: Session = Depends(get_db),current_use
         )
     return delete_user(
         db=db,
-        user_id=user_id
+        user_id=user_id,
+        organization_id=current_user.organization_id,
     )
     
     
@@ -122,27 +131,17 @@ def get_me(current_user: User = Depends(get_current_user)):
 
 
     
-@router.get( "/{user_id}",response_model=UserResponse,status_code=status.HTTP_200_OK)
-
-def get_user(user_id: int,db: Session = Depends(get_db),current_user: User = Depends(get_current_user)):
-
-    user = get_user_by_id(
+@router.get("/{user_id}", response_model=UserResponse, status_code=status.HTTP_200_OK)
+def get_user(
+    user_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return get_user_by_id(
         db=db,
         user_id=user_id,
+        organization_id=current_user.organization_id,
     )
-    if user.organization_id != current_user.organization_id:
-
-        raise HTTPException(
-            status_code=403,
-            detail="Access denied."
-        )
-    if user is None:
-        raise HTTPException(
-            status_code=404,
-            detail="User not found.",
-        )
-    
-    return user
 
 
 

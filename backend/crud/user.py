@@ -51,7 +51,7 @@ def get_users(
         .all()
     )
 
-def get_user_by_id(db: Session, user_id: int):
+def get_user_by_id(db: Session, user_id: int, organization_id: int | None = None):
 
     user = db.query(User).filter(User.id == user_id).first()
     if user is None:
@@ -60,45 +60,45 @@ def get_user_by_id(db: Session, user_id: int):
             detail="User not found."
         )
 
+    if organization_id is not None and user.organization_id != organization_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied."
+        )
+
     return user
 
 
 
 
-def update_user(db: Session, user_id: int,user_update: UserUpdate):
+def update_user(db: Session, user_id: int, user_update: UserUpdate, organization_id: int | None = None):
     
-    db_user = (db.query(User).filter(User.id == user_id).first())
+    db_user = db.query(User).filter(User.id == user_id).first()
 
     if db_user is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found."
         )
+
+    if organization_id is not None and db_user.organization_id != organization_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied."
+        )
         
     update_data = user_update.model_dump(exclude_unset=True)
+
+    # Security: do not allow modifying organization_id supplied by client
+    update_data.pop("organization_id", None)
+
     if "email" in update_data:
-        existing_user = ( db.query(User).filter(User.email == update_data["email"]).first())
-        if ( existing_user and  existing_user.id != user_id):
+        existing_user = db.query(User).filter(User.email == update_data["email"]).first()
+        if existing_user and existing_user.id != user_id:
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
                 detail="Email already exists."
             ) 
-        
-    if "organization_id" in update_data:
-
-        organization = (
-            db.query(Organization)
-            .filter(
-                Organization.id == update_data["organization_id"]
-            )
-            .first()
-        )
-
-        if organization is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Organization not found."
-            )
             
     for key, value in update_data.items():
         setattr(db_user, key, value)
@@ -115,14 +115,20 @@ def update_user(db: Session, user_id: int,user_update: UserUpdate):
     return db_user
 
 
-def delete_user(db: Session, user_id: int):
+def delete_user(db: Session, user_id: int, organization_id: int | None = None):
 
-    user = (db.query(User).filter(User.id == user_id) .first())
+    user = db.query(User).filter(User.id == user_id).first()
 
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found."
+        )
+
+    if organization_id is not None and user.organization_id != organization_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied."
         )
 
     db.delete(user)

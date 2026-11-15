@@ -27,10 +27,17 @@ def get_organizations(db: Session):
     return db.query(Organization).all()
 
 
-from fastapi import HTTPException, status
-
-
-def get_organization_by_id(db: Session, organization_id: int):
+def get_organization_by_id(
+    db: Session,
+    organization_id: int,
+    user_organization_id: int | None = None,
+    is_platform_admin: bool = False,
+):
+    if not is_platform_admin and user_organization_id is not None and user_organization_id != organization_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied."
+        )
 
     organization = (
         db.query(Organization)
@@ -47,8 +54,20 @@ def get_organization_by_id(db: Session, organization_id: int):
     return organization
 
 
-def update_organization( db: Session,organization_id: int, organization_update: OrganizationUpdate):
-    organization = (db.query(Organization).filter(Organization.id == organization_id).first())
+def update_organization(
+    db: Session,
+    organization_id: int,
+    organization_update: OrganizationUpdate,
+    user_organization_id: int | None = None,
+    is_platform_admin: bool = False,
+):
+    if not is_platform_admin and user_organization_id is not None and user_organization_id != organization_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied."
+        )
+
+    organization = db.query(Organization).filter(Organization.id == organization_id).first()
     if organization is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -56,17 +75,29 @@ def update_organization( db: Session,organization_id: int, organization_update: 
         )
 
     update_data = organization_update.model_dump(exclude_unset=True)
+    update_data.pop("id", None)
+
     for key, val in update_data.items():
         setattr(organization, key, val)
-        
-    
+
     db.commit()
     db.refresh(organization)
     return organization
-    
-    
-def delete_organization( db: Session,organization_id: int):
-    organization = (db.query(Organization).filter(Organization.id == organization_id).first())
+
+
+def delete_organization(
+    db: Session,
+    organization_id: int,
+    user_organization_id: int | None = None,
+    is_platform_admin: bool = False,
+):
+    if not is_platform_admin and user_organization_id is not None and user_organization_id != organization_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied."
+        )
+
+    organization = db.query(Organization).filter(Organization.id == organization_id).first()
 
     if organization is None:
         raise HTTPException(

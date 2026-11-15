@@ -1,8 +1,10 @@
+
 from sqlalchemy import Column, Integer, ForeignKey, Text
 from sqlalchemy.orm import relationship
 from pgvector.sqlalchemy import Vector
 
 from database.database import Base
+
 
 class DocumentChunk(Base):
     __tablename__ = "document_chunks"
@@ -17,8 +19,13 @@ class DocumentChunk(Base):
 
     chunk_index = Column(Integer, nullable=False)
 
+    page_number = Column(Integer, nullable=True)
+
     chunk_text = Column(Text, nullable=False)
 
     embedding = Column(Vector(1024))
-    document = relationship( "Document", back_populates="chunks")
 
+    document = relationship(
+        "Document",
+        back_populates="chunks"
+    )

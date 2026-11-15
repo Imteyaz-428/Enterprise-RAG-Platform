@@ -144,30 +144,6 @@ def list_documents(
         db=db,
         organization_id=current_user.organization_id,
     )
-    
-
-@router.get(
-    "/{document_id}",
-    response_model=DocumentResponse,
-)
-def get_document_by_id(
-    document_id: int,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
-):
-    document = get_document(
-        db=db,
-        document_id=document_id,
-        organization_id=current_user.organization_id,
-    )
-
-    if not document:
-        raise HTTPException(
-            status_code=404,
-            detail="Document not found",
-        )
-
-    return document
 
 
 @router.delete("/{document_id}")

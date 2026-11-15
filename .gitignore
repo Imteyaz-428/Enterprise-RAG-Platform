@@ -3,3 +3,6 @@ backend/uploads/
 __pycache__/
 *.pyc
 .env
+*.log
+logs/
+.DS_Store
