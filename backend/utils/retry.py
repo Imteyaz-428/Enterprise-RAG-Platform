@@ -37,18 +37,18 @@ def is_transient_error(exc: BaseException) -> bool:
     if any(transient_word in class_name for transient_word in ("RateLimit", "Timeout", "Connection", "InternalServer", "ServerError", "Network")):
         return True
 
-    # 3. Standard library network exception checks
-    if isinstance(exc, (TimeoutError, ConnectionError)):
-        return True
-    if isinstance(exc, (ValueError, KeyError, TypeError)):
-        return False
-
-    # 4. Message heuristics
+    # 3. Message heuristics
     msg = str(exc).lower()
     if any(w in msg for w in ("401", "402", "403", "unauthorized", "api key", "forbidden", "not found", "insufficient balance", "insufficient_balance", "balance", "credit", "billing", "payment required")):
         return False
     if any(w in msg for w in ("429", "rate limit", "quota", "resource exhausted", "timeout", "timed out", "connection reset", "503", "502")):
         return True
+
+    # 4. Standard library network exception checks
+    if isinstance(exc, (TimeoutError, ConnectionError)):
+        return True
+    if isinstance(exc, (ValueError, KeyError, TypeError)):
+        return False
 
     return False
 

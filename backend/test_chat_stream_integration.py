@@ -17,13 +17,7 @@ from services.ai.ai_services import AIProviderError
 @pytest.fixture
 def db_session():
     engine = create_engine("sqlite:///:memory:")
-    # Create tables needed
-    Base.metadata.create_all(bind=engine, tables=[
-        Organization.__table__,
-        User.__table__,
-        ChatSession.__table__,
-        ChatMessage.__table__,
-    ])
+    Base.metadata.create_all(bind=engine)
     Session = sessionmaker(bind=engine)
     session = Session()
 

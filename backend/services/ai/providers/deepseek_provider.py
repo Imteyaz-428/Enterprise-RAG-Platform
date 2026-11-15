@@ -10,19 +10,18 @@ load_environment()
 
 class DeepSeekProvider(BaseProvider):
 
-    def __init__(self):
-        api_key = (os.getenv("DEEPSEEK_API_KEY") or "").strip()
-        if not api_key:
+    def __init__(self, api_key: str | None = None, model: str | None = None):
+        resolved_key = (api_key or os.getenv("DEEPSEEK_API_KEY") or "").strip()
+        if not resolved_key:
             raise ValueError("DEEPSEEK_API_KEY is not configured")
 
-
         self.client = OpenAI(
-            api_key=api_key,
+            api_key=resolved_key,
             base_url="https://api.deepseek.com",
             timeout=AI_REQUEST_TIMEOUT,
         )
 
-        self.model = os.getenv("DEEPSEEK_MODEL", "deepseek-chat")
+        self.model = model or os.getenv("DEEPSEEK_MODEL", "deepseek-chat")
 
 
     def generate(self, prompt: str) -> str:

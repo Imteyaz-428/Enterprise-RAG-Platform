@@ -66,7 +66,12 @@ class ChatService:
             question=question,
         )
 
-        cached = self.redis.get(cache_key)
+        try:
+            cached = self.redis.get(cache_key)
+        except Exception as e:
+            logger.warning(f"Redis get failed in chat(): {e}")
+            cached = None
+
         if cached and isinstance(cached, dict) and "answer" in cached and "citations" in cached:
             logger.info(f"Redis Cache Hit for session {session.id}")
             save_message(
@@ -108,10 +113,13 @@ class ChatService:
             "citations": citations,
         }
 
-        self.redis.set(
-            cache_key,
-            response,
-        )
+        try:
+            self.redis.set(
+                cache_key,
+                response,
+            )
+        except Exception as e:
+            logger.warning(f"Redis set failed in chat(): {e}")
 
         return {
             "session_id": session.id,
@@ -312,7 +320,12 @@ class ChatService:
             question=question,
         )
 
-        cached = self.redis.get(cache_key)
+        try:
+            cached = self.redis.get(cache_key)
+        except Exception as e:
+            logger.warning(f"Redis get failed in chat_stream(): {e}")
+            cached = None
+
         if cached and isinstance(cached, dict) and "answer" in cached and "citations" in cached:
             logger.info(f"Redis Cache Hit in stream for session {session.id}")
             save_message(
@@ -348,6 +361,7 @@ class ChatService:
         )
 
         tokens = []
+        completed_successfully = False
 
         try:
             for token in self.ai_service.stream_answer(
@@ -358,6 +372,7 @@ class ChatService:
                     f"event: token\n"
                     f"data: {token}\n\n"
                 )
+            completed_successfully = True
         except Exception as e:
             safe_err = self.ai_service._sanitize_error(str(e))
             logger.error(f"Streaming error in chat_stream: {safe_err}")
@@ -373,7 +388,7 @@ class ChatService:
             )
             return
         finally:
-            if tokens:
+            if tokens and completed_successfully:
                 answer = "".join(tokens)
                 save_message(
                     db=db,
@@ -382,13 +397,16 @@ class ChatService:
                     content=answer,
                     citations=citations,
                 )
-                self.redis.set(
-                    cache_key,
-                    {
-                        "answer": answer,
-                        "citations": citations,
-                    },
-                )
+                try:
+                    self.redis.set(
+                        cache_key,
+                        {
+                            "answer": answer,
+                            "citations": citations,
+                        },
+                    )
+                except Exception as e:
+                    logger.warning(f"Redis set failed in chat_stream(): {e}")
 
         yield (
             "event: done\n"

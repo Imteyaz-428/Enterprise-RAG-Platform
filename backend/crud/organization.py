@@ -6,18 +6,30 @@ from schemas.organization import OrganizationCreate,OrganizationUpdate
 
 
 def create_organization(db: Session, organization: OrganizationCreate):
+    existing = db.query(Organization).filter(
+        (Organization.slug == organization.slug) | (Organization.name == organization.name)
+    ).first()
+    if existing:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Organization with this name or slug already exists."
+        )
 
     db_organization = Organization(
-
         name=organization.name,
-
         slug=organization.slug
-
     )
 
     db.add(db_organization)
 
-    db.flush()
+    try:
+        db.flush()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Organization with this name or slug already exists."
+        )
 
     db.refresh(db_organization)
 

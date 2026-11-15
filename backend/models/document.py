@@ -4,7 +4,6 @@ from sqlalchemy.orm import relationship
 from database.database import Base
 
 
-
 class Document(Base):
     __tablename__ = "documents"
 
@@ -21,19 +20,20 @@ class Document(Base):
 
     organization_id = Column(
         Integer,
-        ForeignKey("organizations.id"),
+        ForeignKey("organizations.id", ondelete="CASCADE"),
         nullable=False
     )
 
     uploaded_by = Column(
         Integer,
-        ForeignKey("users.id"),
+        ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False
     )
-    status = Column( String,nullable=False,default="processing")
+    status = Column(String, nullable=False, default="processing")
 
-    organization = relationship("Organization",back_populates="documents")
+    organization = relationship("Organization", back_populates="documents")
     uploader = relationship("User", back_populates="documents")
-    chunks = relationship( "DocumentChunk", back_populates="document",cascade="all, delete-orphan")
+    chunks = relationship("DocumentChunk", back_populates="document", cascade="all, delete-orphan")
+
 
 

@@ -2,7 +2,7 @@ import os
 from typing import Iterator
 
 from google import genai
-from services.ai.config import load_environment
+from services.ai.config import AI_REQUEST_TIMEOUT, load_environment
 from services.ai.providers.base_provider import BaseProvider
 
 load_environment()
@@ -10,16 +10,17 @@ load_environment()
 
 class GeminiProvider(BaseProvider):
 
-    def __init__(self):
+    def __init__(self, api_key: str | None = None, model: str | None = None):
         # Support both GEMINI_API_KEY and GOOGLE_API_KEY, strip whitespace
-        api_key = (os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY") or "").strip()
-        if not api_key:
+        resolved_key = (api_key or os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY") or "").strip()
+        if not resolved_key:
             raise ValueError("GEMINI_API_KEY is not configured")
 
         self.client = genai.Client(
-            api_key=api_key
+            api_key=resolved_key,
+            http_options={"timeout": AI_REQUEST_TIMEOUT * 1000},
         )
-        self.model = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+        self.model = model or os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
 
 
 

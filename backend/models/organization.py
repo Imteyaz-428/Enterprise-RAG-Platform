@@ -1,7 +1,7 @@
+from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.orm import relationship
 from database.database import Base
-from datetime import datetime
 
 
 class Organization(Base):
@@ -11,5 +11,7 @@ class Organization(Base):
     name = Column(String, nullable=False)
     slug = Column(String, unique=True, nullable=False, index=True)
     created_at = Column(DateTime, default=datetime.utcnow)
-    users = relationship("User",back_populates="organization",cascade="all, delete-orphan")
-    documents = relationship("Document", back_populates="organization")
+
+    users = relationship("User", back_populates="organization", cascade="all, delete-orphan")
+    documents = relationship("Document", back_populates="organization", cascade="all, delete-orphan")
+    chat_sessions = relationship("ChatSession", back_populates="organization", cascade="all, delete-orphan")

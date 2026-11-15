@@ -1,30 +1,69 @@
-
+import pytest
 from sentence_transformers import CrossEncoder
+from services.chat.reranking_service import get_optimal_device
 
-model = CrossEncoder(
-    "cross-encoder/ms-marco-MiniLM-L-6-v2",
-    device="mps",
-)
 
-query = "What is static code analysis?"
+def test_reranker_model_prediction():
+    device = get_optimal_device()
+    try:
+        model = CrossEncoder(
+            "cross-encoder/ms-marco-MiniLM-L-6-v2",
+            device=device,
+        )
+    except Exception:
+        model = CrossEncoder(
+            "cross-encoder/ms-marco-MiniLM-L-6-v2",
+            device="cpu",
+        )
 
-passages = [
-    "Static code analysis examines source code without executing it.",
-    "A database stores structured information.",
-    "Static analysis can detect security vulnerabilities and code quality issues.",
-]
+    query = "What is static code analysis?"
 
-pairs = [(query, passage) for passage in passages]
+    passages = [
+        "Static code analysis examines source code without executing it.",
+        "A database stores structured information.",
+        "Static analysis can detect security vulnerabilities and code quality issues.",
+    ]
 
-scores = model.predict(pairs)
+    pairs = [(query, passage) for passage in passages]
 
-ranked = sorted(
-    zip(passages, scores),
-    key=lambda item: item[1],
-    reverse=True,
-)
+    scores = model.predict(pairs)
 
-for passage, score in ranked:
-    print(f"Score: {float(score):.4f}")
-    print(passage)
-    print("-" * 50)
+    ranked = sorted(
+        zip(passages, scores),
+        key=lambda item: float(item[1]),
+        reverse=True,
+    )
+
+    assert len(ranked) == 3
+    # Top ranked passage must be about static code analysis
+    assert "Static" in ranked[0][0]
+
+
+def run_diagnostics():
+    device = get_optimal_device()
+    try:
+        model = CrossEncoder(
+            "cross-encoder/ms-marco-MiniLM-L-6-v2",
+            device=device,
+        )
+    except Exception:
+        model = CrossEncoder(
+            "cross-encoder/ms-marco-MiniLM-L-6-v2",
+            device="cpu",
+        )
+
+    query = "What is static code analysis?"
+    passages = [
+        "Static code analysis examines source code without executing it.",
+        "A database stores structured information.",
+        "Static analysis can detect security vulnerabilities and code quality issues.",
+    ]
+    pairs = [(query, passage) for passage in passages]
+    scores = model.predict(pairs)
+    ranked = sorted(zip(passages, scores), key=lambda item: float(item[1]), reverse=True)
+    for passage, score in ranked:
+        print(f"Score: {float(score):.4f} | {passage}")
+
+
+if __name__ == "__main__":
+    run_diagnostics()

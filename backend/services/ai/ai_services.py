@@ -110,6 +110,9 @@ class AIService:
         providers: list[str],
         prompt: str,
     ) -> str:
+        if not providers:
+            raise AIProviderError("All AI providers failed. Details: No providers configured.")
+
         provider_errors = {}
         for provider_name in providers:
             try:
@@ -144,27 +147,34 @@ class AIService:
     def generate_answer(
         self,
         prompt: str,
+        providers: list[str] | None = None,
     ) -> str:
+        target_providers = providers if providers is not None else RAG_PROVIDERS
         return self._execute_with_fallback(
-            providers=RAG_PROVIDERS,
+            providers=target_providers,
             prompt=prompt,
         )
 
     def stream_answer(
         self,
         prompt: str,
+        providers: list[str] | None = None,
     ) -> Iterator[str]:
         """
         Streams answer with reliable provider fallback before the first token is emitted.
         Buffers the initial token so that the active provider is committed safely.
         Once the first token is emitted to the client, the provider cannot be switched.
         """
+        target_providers = providers if providers is not None else RAG_PROVIDERS
+        if not target_providers:
+            raise AIProviderError("All AI providers failed to generate stream. Details: No providers configured.")
+
         active_provider = None
         first_token = None
         token_iterator = None
         provider_errors = {}
 
-        for provider_name in RAG_PROVIDERS:
+        for provider_name in target_providers:
             try:
                 logger.info(f"Attempting AI Provider (stream): {provider_name}")
                 provider = self._get_provider(provider_name)

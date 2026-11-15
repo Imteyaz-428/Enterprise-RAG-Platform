@@ -10,18 +10,17 @@ load_environment()
 
 class GroqProvider(BaseProvider):
 
-    def __init__(self):
-        api_key = (os.getenv("GROQ_API_KEY") or "").strip()
-        if not api_key:
+    def __init__(self, api_key: str | None = None, model: str | None = None):
+        resolved_key = (api_key or os.getenv("GROQ_API_KEY") or "").strip()
+        if not resolved_key:
             raise ValueError("GROQ_API_KEY is not configured")
 
-
         self.client = Groq(
-            api_key=api_key,
+            api_key=resolved_key,
             timeout=AI_REQUEST_TIMEOUT,
         )
 
-        self.model = os.getenv("GROQ_MODEL", "qwen/qwen3.8-27b")
+        self.model = model or os.getenv("GROQ_MODEL", "qwen/qwen3.8-27b")
 
 
     def generate(self, prompt: str) -> str:

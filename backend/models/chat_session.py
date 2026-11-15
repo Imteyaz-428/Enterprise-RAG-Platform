@@ -29,8 +29,8 @@ class ChatSession(Base):
         server_default=func.now()
     )
 
-    organization = relationship("Organization")
-    user = relationship("User")
+    organization = relationship("Organization", back_populates="chat_sessions")
+    user = relationship("User", back_populates="chat_sessions")
 
     messages = relationship(
         "ChatMessage",

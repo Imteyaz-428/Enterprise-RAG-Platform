@@ -6,3 +6,9 @@ __pycache__/
 *.log
 logs/
 .DS_Store
+.env
+.venv/
+uploads/
+logs/
+*.zip
+__pycache__/

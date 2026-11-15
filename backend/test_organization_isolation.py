@@ -27,10 +27,7 @@ from router.organization import (
 @pytest.fixture
 def db_session():
     engine = create_engine("sqlite:///:memory:")
-    Base.metadata.create_all(
-        bind=engine,
-        tables=[Organization.__table__, User.__table__, Document.__table__],
-    )
+    Base.metadata.create_all(bind=engine)
     Session = sessionmaker(bind=engine)
     session = Session()
 
