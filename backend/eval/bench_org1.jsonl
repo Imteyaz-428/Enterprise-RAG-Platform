@@ -1,0 +1,31 @@
+{"id": "mba-01", "source": "mba-report", "question": "How many dark stores does Veloura currently operate, and in how many cities?", "must_contain_any": ["118 dark stores across eight metropolitan cities"], "pages": [1]}
+{"id": "mba-02", "source": "mba-report", "question": "What total capital investment does Project Lotus require in the base case?", "must_contain_any": ["total capital investment of inr 410 crore"], "pages": [1]}
+{"id": "mba-03", "source": "mba-report", "question": "What cumulative five-year IRR does the base case reach?", "must_contain_any": ["cumulative 5-year irr of 22.4%"], "pages": [1]}
+{"id": "mba-04", "source": "mba-report", "question": "Which four cities are recommended for the pilot phase?", "must_contain_any": ["four pilot cities: indore, jaipur, lucknow and coimbatore"], "pages": [1]}
+{"id": "mba-05", "source": "mba-report", "question": "Why is the smaller basket size in Tier-2 cities only partly a problem for profitability?", "must_contain_any": ["last-mile delivery cost per order is 38% lower"], "pages": [1]}
+{"id": "mba-06", "source": "mba-report", "question": "How many dark stores per million people does Indore have compared with Bengaluru?", "must_contain_any": ["4.2 stores per million people"], "pages": [2]}
+{"id": "mba-07", "source": "mba-report", "question": "What spoilage rate does Veloura achieve versus the industry average?", "must_contain_any": ["reduces spoilage to 2.1%"], "pages": [2]}
+{"id": "mba-08", "source": "mba-report", "question": "How many Veloura Prime members are there?", "must_contain_any": ["640,000 active members"], "pages": [2]}
+{"id": "mba-09", "source": "mba-report", "question": "How many new dark stores will exist at the end of the programme?", "must_contain_any": ["total at the end of the programme is 76"], "pages": [3]}
+{"id": "mba-10", "source": "mba-report", "question": "Where will the new regional distribution centre be established?", "must_contain_any": ["regional distribution centre (rdc) will be established in nagpur"], "pages": [3]}
+{"id": "mba-11", "source": "mba-report", "question": "What is the EBITDA trajectory over the five years?", "must_contain_any": ["ebitda -88 -61 14"], "pages": [3]}
+{"id": "mba-12", "source": "mba-report", "question": "What is the net present value at the 12% discount rate?", "must_contain_any": ["at a 12% discount rate is inr 186 crore"], "pages": [3]}
+{"id": "mba-13", "source": "mba-report", "question": "What happens to the IRR in the downside scenario?", "must_contain_any": ["irr falls to 11.8%"], "pages": [3]}
+{"id": "mba-14", "source": "mba-report", "question": "What rider attrition did the Indore pilot data show?", "must_contain_any": ["reached 14% per month"], "pages": [4]}
+{"id": "mba-15", "source": "mba-report", "question": "What conditions must pilot stores meet before Phase 2 proceeds?", "must_contain_any": ["minimum of 18,000 orders per store per month"], "pages": [4]}
+{"id": "web-01", "source": "sparseroute-paper", "question": "How many parameters does the router network have?", "must_contain_any": ["85 million parameters"], "pages": [1, 2]}
+{"id": "web-02", "source": "sparseroute-paper", "question": "What exact-match score does SparseRoute achieve on LongQA-Bench?", "must_contain_any": ["exact-match score of 68.4"], "pages": [1]}
+{"id": "web-03", "source": "sparseroute-paper", "question": "By how much does SparseRoute reduce the number of retrieved tokens?", "must_contain_any": ["41% fewer retrieved tokens"], "pages": [1]}
+{"id": "web-04", "source": "sparseroute-paper", "question": "What is the default token budget used during assembly?", "must_contain_any": ["default b = 2,048"], "pages": [2]}
+{"id": "web-05", "source": "sparseroute-paper", "question": "What weight is given to the redundancy term in the Budgeted Contrastive Loss?", "must_contain_any": ["= 0.15 based on validation performance"], "pages": [2]}
+{"id": "web-06", "source": "sparseroute-paper", "question": "What learning rate was the router trained with?", "must_contain_any": ["learning rate of 3e-5"], "pages": [2]}
+{"id": "web-07", "source": "sparseroute-paper", "question": "How many questions does LongQA-Bench contain and how are they split by hop count?", "must_contain_any": ["12,500 questions: 40% single-hop"], "pages": [3]}
+{"id": "web-08", "source": "sparseroute-paper", "question": "Why is simply using a bigger context window not enough for long documents?", "must_contain_any": ["simply expanding the context window is not sufficient"], "pages": [3]}
+{"id": "web-09", "source": "sparseroute-paper", "question": "How much does SparseRoute improve over DenseFlat on questions needing three or more hops?", "must_contain_any": ["three-hop or more 41.7 55.3 +13.6"], "pages": [3]}
+{"id": "web-10", "source": "sparseroute-paper", "question": "How much latency overhead does the router add per query?", "must_contain_any": ["router adds only 38"], "pages": [3]}
+{"id": "web-11", "source": "sparseroute-paper", "question": "Which component's removal caused the largest drop in the ablation study?", "must_contain_any": ["removing the granularity head causes the largest drop"], "pages": [4]}
+{"id": "web-12", "source": "sparseroute-paper", "question": "What gain comes from raising the budget from 2,048 to 4,096 tokens?", "must_contain_any": ["yields only a 0.5-point gain"], "pages": [4]}
+{"id": "web-13", "source": "sparseroute-paper", "question": "What are the stated limitations regarding language coverage?", "must_contain_any": ["trained primarily on english-language documents"], "pages": [4]}
+{"id": "none-01", "source": "unanswerable", "question": "What was Veloura Retail's revenue in FY2026?", "answerable": false}
+{"id": "none-02", "source": "unanswerable", "question": "What is the refund policy for unused tuition fees?", "answerable": false}
+{"id": "none-03", "source": "unanswerable", "question": "Which GPU was used to train the SparseRoute router?", "answerable": false}

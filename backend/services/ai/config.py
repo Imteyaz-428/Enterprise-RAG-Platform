@@ -26,6 +26,7 @@ else:
     ]
 
 SEARCH_TOP_K = 5
+RERANK_CANDIDATES = 20
 
 # AI Provider Reliability & Execution Configuration
 AI_REQUEST_TIMEOUT = 30  # seconds per request
