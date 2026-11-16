@@ -1,3 +1,4 @@
+import concurrent.futures
 import os
 import re
 from typing import Iterator, Any
@@ -109,20 +110,40 @@ class AIService:
         self,
         providers: list[str],
         prompt: str,
+        timeout_seconds: float | None = None,
+        max_attempts: int | None = None,
+        max_fallbacks: int | None = None,
     ) -> str:
         if not providers:
             raise AIProviderError("All AI providers failed. Details: No providers configured.")
 
+        candidate_providers = providers
+        if max_fallbacks is not None:
+            candidate_providers = providers[: max(0, max_fallbacks + 1)]
+
+        if not candidate_providers:
+            raise AIProviderError("All AI providers failed. Details: No providers configured.")
+
         provider_errors = {}
-        for provider_name in providers:
+        for provider_name in candidate_providers:
             try:
                 logger.info(f"Using AI Provider: {provider_name}")
                 provider = self._get_provider(provider_name)
 
+                def _call_provider():
+                    if timeout_seconds is not None and timeout_seconds > 0:
+                        executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
+                        try:
+                            future = executor.submit(provider.generate, prompt)
+                            return future.result(timeout=timeout_seconds)
+                        finally:
+                            executor.shutdown(wait=False, cancel_futures=True)
+                    return provider.generate(prompt)
+
                 # Execute generation with retry for transient errors
                 response = retry_request(
-                    provider.generate,
-                    prompt,
+                    _call_provider,
+                    max_attempts=max_attempts,
                 )
 
                 # Validate response is non-empty
@@ -148,11 +169,17 @@ class AIService:
         self,
         prompt: str,
         providers: list[str] | None = None,
+        timeout_seconds: float | None = None,
+        max_attempts: int | None = None,
+        max_fallbacks: int | None = None,
     ) -> str:
         target_providers = providers if providers is not None else RAG_PROVIDERS
         return self._execute_with_fallback(
             providers=target_providers,
             prompt=prompt,
+            timeout_seconds=timeout_seconds,
+            max_attempts=max_attempts,
+            max_fallbacks=max_fallbacks,
         )
 
     def stream_answer(
