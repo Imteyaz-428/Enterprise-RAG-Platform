@@ -19,6 +19,7 @@ from models.chat_session import ChatSession
 from services.ai.ai_services import AIService
 from services.cache.redis_service import RedisService
 from services.chat.prompt_service import PromptService
+from services.chat.query_rewriter import rewrite_query
 from services.chat.retrieval_service import RetrievalService
 from utils.logger import logger
 
@@ -54,17 +55,21 @@ class ChatService:
         4. Saves assistant message to database and caches result in Redis.
         5. Returns structured ChatResponse dict.
         """
-        session, prompt, citations = self._prepare_chat(
+        prep = self._prepare_chat(
             db=db,
             question=question,
             organization_id=organization_id,
             user_id=user_id,
             session_id=session_id,
         )
-        cache_key = self._get_cache_key(
-            organization_id=organization_id,
-            question=question,
-        )
+        if len(prep) == 4:
+            session, prompt, citations, cache_key = prep
+        else:
+            session, prompt, citations = prep[:3]
+            cache_key = self._get_cache_key(
+                organization_id=organization_id,
+                question=question,
+            )
 
         try:
             cached = self.redis.get(cache_key)
@@ -170,7 +175,7 @@ class ChatService:
         organization_id: int,
         user_id: int,
         session_id: int | None = None,
-    ) -> Tuple[ChatSession, str, List[Dict[str, Any]]]:
+    ) -> Tuple[ChatSession, str, List[Dict[str, Any]], str]:
         session = self._get_or_create_session(
             db=db,
             session_id=session_id,
@@ -185,7 +190,21 @@ class ChatService:
             session_id=session.id,
         )
 
-        # Persist user question
+        # Compute standalone question from history and user question
+        history_dicts = [
+            {
+                "role": m.role.value if hasattr(m.role, "value") else str(m.role),
+                "content": m.content,
+            }
+            for m in history
+        ]
+        standalone = rewrite_query(
+            history=history_dicts,
+            question=question,
+            ai_service=self.ai_service,
+        )
+
+        # Persist user question (keep original user question in saved message)
         save_message(
             db=db,
             session_id=session.id,
@@ -193,9 +212,10 @@ class ChatService:
             content=question,
         )
 
+        # Use standalone question for retrieval
         results = self.retrieval_service.retrieve(
             db=db,
-            question=question,
+            question=standalone,
             organization_id=organization_id,
         )
 
@@ -218,13 +238,20 @@ class ChatService:
                 }
             )
 
+        # Keep original user question in the final prompt
         prompt = self.prompt_service.build_prompt(
             history=history,
             chunks=results,
             question=question,
         )
 
-        return session, prompt, citations
+        # Cache key uses standalone question
+        cache_key = self._get_cache_key(
+            organization_id=organization_id,
+            question=standalone,
+        )
+
+        return session, prompt, citations, cache_key
 
     def get_user_sessions(self, db: Session, organization_id: int, user_id: int):
         return get_user_sessions_db(
@@ -308,17 +335,21 @@ class ChatService:
         4. Emits event: done
         5. If failure occurs before or during token generation, emits event: error followed by event: done.
         """
-        session, prompt, citations = self._prepare_chat(
+        prep = self._prepare_chat(
             db=db,
             question=question,
             organization_id=organization_id,
             user_id=user_id,
             session_id=session_id,
         )
-        cache_key = self._get_cache_key(
-            organization_id=organization_id,
-            question=question,
-        )
+        if len(prep) == 4:
+            session, prompt, citations, cache_key = prep
+        else:
+            session, prompt, citations = prep[:3]
+            cache_key = self._get_cache_key(
+                organization_id=organization_id,
+                question=question,
+            )
 
         try:
             cached = self.redis.get(cache_key)

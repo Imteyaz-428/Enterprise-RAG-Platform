@@ -1,14 +1,15 @@
 from tenacity import (
-    retry,
     stop_after_attempt,
     wait_exponential,
     retry_if_exception,
+    Retrying,
 )
 from services.ai.config import (
     AI_MAX_RETRIES,
     AI_RETRY_MIN_WAIT,
     AI_RETRY_MAX_WAIT,
 )
+import services.ai.config as ai_config
 
 
 def is_transient_error(exc: BaseException) -> bool:
@@ -53,15 +54,20 @@ def is_transient_error(exc: BaseException) -> bool:
     return False
 
 
-@retry(
-    stop=stop_after_attempt(AI_MAX_RETRIES),
-    wait=wait_exponential(
-        multiplier=1,
-        min=AI_RETRY_MIN_WAIT,
-        max=AI_RETRY_MAX_WAIT,
-    ),
-    retry=retry_if_exception(is_transient_error),
-    reraise=True,
-)
-def retry_request(func, *args, **kwargs):
-    return func(*args, **kwargs)
+def retry_request(func, *args, max_attempts: int | None = None, **kwargs):
+    attempts = max_attempts if max_attempts is not None else ai_config.AI_MAX_RETRIES
+    if attempts <= 1:
+        return func(*args, **kwargs)
+
+    for attempt in Retrying(
+        stop=stop_after_attempt(attempts),
+        wait=wait_exponential(
+            multiplier=1,
+            min=ai_config.AI_RETRY_MIN_WAIT,
+            max=ai_config.AI_RETRY_MAX_WAIT,
+        ),
+        retry=retry_if_exception(is_transient_error),
+        reraise=True,
+    ):
+        with attempt:
+            return func(*args, **kwargs)

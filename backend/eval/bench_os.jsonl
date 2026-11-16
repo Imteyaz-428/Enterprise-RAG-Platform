@@ -1,0 +1,5 @@
+{"id": "os-01", "source": "os-lab", "question": "Which system call creates a new child process?", "must_contain_any": ["creates a new child process"], "pages": [1]}
+{"id": "os-02", "source": "os-lab", "question": "What does the exec() system call do?", "must_contain_any": ["replaces process memory with a new program"], "pages": [1]}
+{"id": "os-03", "source": "os-lab", "question": "In the FCFS experiment, how is the waiting time of each process after the first one calculated?", "must_contain_any": ["waiting time[i-1] + burst time[i-1]"], "pages": [5]}
+{"id": "os-04", "source": "os-lab", "question": "What are the disadvantages of Shortest Job First scheduling?", "must_contain_any": ["starvation of long processes"], "pages": [8]}
+{"id": "os-05", "source": "os-lab", "question": "What does the parent process do after calling fork() in the algorithm?", "must_contain_any": ["call wait() to wait for child process"], "pages": [1]}

@@ -12,3 +12,4 @@ uploads/
 logs/
 *.zip
 __pycache__/
+backend/eval/.embed_cache.json
