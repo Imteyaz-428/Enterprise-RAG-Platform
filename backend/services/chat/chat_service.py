@@ -18,13 +18,36 @@ from crud.chat_session import (
 from models.chat_session import ChatSession
 from services.ai.ai_services import AIService
 from services.cache.redis_service import RedisService
-from services.chat.citation_validator import extract_markers, validate_citations
+from services.chat.citation_validator import (
+    NOT_FOUND_ANSWER,
+    extract_markers,
+    is_not_found,
+    validate_citations,
+)
 from services.chat.prompt_service import PromptService
 from services.chat.query_rewriter import rewrite_query
 from services.chat.retrieval_service import RetrievalService
 from utils.logger import logger
 
 MAX_TITLE_LENGTH = 50
+
+
+class PrepResult(tuple):
+    chunk_texts: Dict[int, str]
+
+    def __new__(
+        cls,
+        session: ChatSession,
+        prompt: str,
+        citations: List[Dict[str, Any]],
+        cache_key: str,
+        chunk_texts: Dict[int, str] | None = None,
+    ):
+        instance = super().__new__(
+            cls, (session, prompt, citations, cache_key)
+        )
+        instance.chunk_texts = chunk_texts or {}
+        return instance
 
 
 class ChatService:
@@ -72,6 +95,8 @@ class ChatService:
                 question=question,
             )
 
+        chunk_texts = getattr(prep, "chunk_texts", None)
+
         try:
             cached = self.redis.get(cache_key)
         except Exception as e:
@@ -109,16 +134,21 @@ class ChatService:
         clean_answer, used_citations, invalid_markers = validate_citations(
             answer=answer,
             citations=citations,
+            chunk_texts=chunk_texts,
         )
 
-        valid_markers = extract_markers(clean_answer)
-        if invalid_markers or not valid_markers:
-            logger.warning(
-                f"Citation validation for session {session.id}: "
-                f"{len(invalid_markers)} invalid markers removed, "
-                f"{len(valid_markers)} valid markers found "
-                f"({'markers missing' if not valid_markers else 'markers valid'})."
-            )
+        if is_not_found(answer) or is_not_found(clean_answer):
+            clean_answer = NOT_FOUND_ANSWER
+            used_citations = []
+        else:
+            valid_markers = extract_markers(clean_answer)
+            if invalid_markers or not valid_markers:
+                logger.warning(
+                    f"Citation validation for session {session.id}: "
+                    f"{len(invalid_markers)} invalid markers removed, "
+                    f"{len(valid_markers)} valid markers found "
+                    f"({'markers missing' if not valid_markers else 'markers valid'})."
+                )
 
         save_message(
             db=db,
@@ -249,16 +279,23 @@ class ChatService:
             vis.add(key)
             unique_results.append(result)
 
+        chunk_texts = {}
         for index, result in enumerate(unique_results, start=1):
             raw_text = getattr(result.chunk, "chunk_text", None)
             if isinstance(raw_text, str):
+                full_chunk_text = raw_text
                 snippet = " ".join(raw_text.split())[:200]
             elif hasattr(result, "text") and isinstance(result.text, str):
+                full_chunk_text = result.text
                 snippet = " ".join(result.text.split())[:200]
             elif raw_text is not None and type(raw_text).__name__ != "MagicMock":
+                full_chunk_text = str(raw_text)
                 snippet = " ".join(str(raw_text).split())[:200]
             else:
+                full_chunk_text = ""
                 snippet = None
+
+            chunk_texts[index] = full_chunk_text
 
             page_no = getattr(result.chunk, "page_number", None)
             page_number = page_no if isinstance(page_no, int) else None
@@ -296,7 +333,13 @@ class ChatService:
             question=standalone,
         )
 
-        return session, prompt, citations, cache_key
+        return PrepResult(
+            session=session,
+            prompt=prompt,
+            citations=citations,
+            cache_key=cache_key,
+            chunk_texts=chunk_texts,
+        )
 
     def get_user_sessions(self, db: Session, organization_id: int, user_id: int):
         return get_user_sessions_db(
@@ -396,6 +439,8 @@ class ChatService:
                 question=question,
             )
 
+        chunk_texts = getattr(prep, "chunk_texts", None)
+
         try:
             cached = self.redis.get(cache_key)
         except Exception as e:
@@ -467,9 +512,18 @@ class ChatService:
             if tokens and completed_successfully:
                 answer = "".join(tokens)
 
+                if is_not_found(answer):
+                    norm_answer = " ".join(answer.strip().split()).lower()
+                    norm_target = " ".join(NOT_FOUND_ANSWER.strip().split()).lower()
+                    if norm_answer != norm_target:
+                        logger.warning(
+                            f"Stream session {session.id}: answer starts with not-found sentence but has extra text: {answer!r}"
+                        )
+
                 clean_answer, used_citations, invalid_markers = validate_citations(
                     answer=answer,
                     citations=citations,
+                    chunk_texts=chunk_texts,
                 )
                 valid_markers = extract_markers(clean_answer)
                 if invalid_markers or not valid_markers:

@@ -1,0 +1,8 @@
+{"id": "trap-01", "source": "trap", "question": "What exact-match score does SparseRoute achieve on NaturalQuestions-Long?", "answerable": false}
+{"id": "trap-02", "source": "trap", "question": "What F1 score does TreeWalk achieve on HotpotQA?", "answerable": false}
+{"id": "trap-03", "source": "trap", "question": "What is Veloura's IRR in the upside scenario?", "answerable": false}
+{"id": "trap-04", "source": "trap", "question": "How many dark stores does Veloura currently operate in Chennai?", "answerable": false}
+{"id": "trap-05", "source": "trap", "question": "What is the projected revenue for Year 6 of Project Lotus?", "answerable": false}
+{"id": "trap-06", "source": "trap", "question": "How much did Veloura spend on marketing in FY2025?", "answerable": false}
+{"id": "trap-07", "source": "trap", "question": "What is the average order value in Indore specifically?", "answerable": false}
+{"id": "trap-08", "source": "trap", "question": "What batch size was used to train the SparseRoute router?", "answerable": false}
