@@ -1,0 +1,50 @@
+[
+  {
+    "id": "q1",
+    "query": "What is CodeGuardian AI and what does it do?",
+    "document_id": 1,
+    "expected_keywords": ["CodeGuardian", "risk", "intelligence", "autonomous"]
+  },
+  {
+    "id": "q2",
+    "query": "Explain static code analysis and risk prediction in CodeGuardian",
+    "document_id": 1,
+    "expected_keywords": ["static code analysis", "AST parsing", "risk prediction"]
+  },
+  {
+    "id": "q3",
+    "query": "What is CampusFlow AI project overview and AI agent guide?",
+    "document_id": 2,
+    "expected_keywords": ["CampusFlow", "agent", "Gemini", "project"]
+  },
+  {
+    "id": "q4",
+    "query": "What are cloud computing architectures and virtualization?",
+    "document_id": 3,
+    "expected_keywords": ["cloud", "system", "services", "servers"]
+  },
+  {
+    "id": "q5",
+    "query": "Which college presentation was CodeGuardian AI developed for?",
+    "document_id": 1,
+    "expected_keywords": ["Galgotias College", "Engineering", "Technology"]
+  },
+  {
+    "id": "q6",
+    "query": "What are the core Gemini-powered campus extensions in CampusFlow?",
+    "document_id": 2,
+    "expected_keywords": ["CampusFlow", "Gemini", "capabilities"]
+  },
+  {
+    "id": "q7",
+    "query": "What is the design structure of a cloud system?",
+    "document_id": 3,
+    "expected_keywords": ["cloud system", "storage", "networks", "services"]
+  },
+  {
+    "id": "q8",
+    "query": "How does CodeGuardian provide automated fixes and verification?",
+    "document_id": 1,
+    "expected_keywords": ["fixes", "verification", "CodeGuardian"]
+  }
+]
