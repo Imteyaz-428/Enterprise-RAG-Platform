@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from database.database import Base, engine
 from core.errors import setup_error_handlers
+from core.security import validate_jwt_settings
 from utils.logger import logger
 
 from router.organization import router as organization_router
@@ -23,6 +24,8 @@ import models.chat_message
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # Validate SECRET_KEY and ALGORITHM at startup, failing fast
+    validate_jwt_settings()
     try:
         Base.metadata.create_all(bind=engine)
     except Exception as e:

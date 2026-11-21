@@ -28,8 +28,8 @@ class Document(Base):
 
     uploaded_by = Column(
         Integer,
-        ForeignKey("users.id", ondelete="CASCADE"),
-        nullable=False
+        ForeignKey("users.id", ondelete="SET NULL"),
+        nullable=True
     )
     status = Column(String, nullable=False, default="processing")
 

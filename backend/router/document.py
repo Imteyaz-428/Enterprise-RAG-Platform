@@ -26,7 +26,13 @@ from crud.document import (
     get_document_by_hash,
 )
 
-from core.dependencies import get_current_user
+from core.dependencies import (
+    get_current_user,
+    require_role,
+    has_role,
+    is_platform_admin,
+    UserRole,
+)
 from dependencies.database import get_db
 from services.background.document_processor import process_document
 
@@ -49,8 +55,13 @@ def upload_document(
     background_tasks: BackgroundTasks,
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_role(UserRole.MANAGER)),
 ):
+    if not has_role(current_user, UserRole.MANAGER):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Manager access required",
+        )
     title = file.filename.rsplit(".", 1)[0]
     if file.content_type != "application/pdf":
         raise HTTPException(
@@ -197,23 +208,35 @@ def list_documents(
 def remove_document(
     document_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_role(UserRole.MANAGER)),
 ):
-    document = get_accessible_document(
+    if not has_role(current_user, UserRole.MANAGER):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Manager access required",
+        )
+
+    is_platform = is_platform_admin(current_user)
+    doc = get_document_by_id(
         db=db,
         document_id=document_id,
-        organization_id=current_user.organization_id,
     )
 
-    if not document:
+    if not doc:
         raise HTTPException(
             status_code=404,
             detail="Document not found",
         )
 
+    if not is_platform and doc.organization_id != current_user.organization_id:
+        raise HTTPException(
+            status_code=403,
+            detail="Access denied.",
+        )
+
     delete_document(
         db=db,
-        document=document,
+        document=doc,
     )
 
     return {

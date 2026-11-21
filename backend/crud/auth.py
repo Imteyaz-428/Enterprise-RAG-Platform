@@ -42,10 +42,17 @@ def signup(db: Session, data: SignupRequest):
                 "organization_id": admin.organization_id
             }
         )
+        from core.security import create_refresh_token
+        refresh_token = create_refresh_token(
+            {
+                "sub": str(admin.id),
+            }
+        )
 
         return {
             "access_token": token,
-            "token_type": "bearer"
+            "token_type": "bearer",
+            "refresh_token": refresh_token,
         }
 
     except IntegrityError:
