@@ -9,6 +9,10 @@ class ChatRequest(BaseModel):
 class CitationResponse(BaseModel):
     document: str
     chunk_index: int
+    id: int | None = None
+    document_id: int | None = None
+    page_number: int | None = None
+    snippet: str | None = None
 
 
 class ChatResponse(BaseModel):

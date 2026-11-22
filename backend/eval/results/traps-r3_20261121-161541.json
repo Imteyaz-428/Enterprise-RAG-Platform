@@ -1,0 +1,502 @@
+{
+  "label": "traps-r3",
+  "timestamp": "2026-11-21T16:15:41",
+  "org_id": 1,
+  "dataset": "eval/bench_traps.jsonl",
+  "summary": {
+    "n_total": 24,
+    "n_answerable": 0,
+    "n_unanswerable": 24,
+    "n_errors": 0,
+    "refusal_rate": 0.0,
+    "answered_with_citation_rate": 0.0,
+    "citation_anchor_rate": 0.0,
+    "total_citations": 0,
+    "supported_citations": 0,
+    "not_found_rate": 1.0,
+    "latency_ms_mean": 9349.0,
+    "latency_ms_p95": 15143.8
+  },
+  "rows": [
+    {
+      "id": "trap-01",
+      "trial": 1,
+      "source": "trap",
+      "question": "What exact-match score does SparseRoute achieve on NaturalQuestions-Long?",
+      "answerable": false,
+      "raw_answer": "I could not find this in the provided documents.",
+      "clean_answer": "I could not find this in the provided documents.",
+      "latency_ms": 3385.1,
+      "status": "success",
+      "marker_actions": [
+        {
+          "action": "not_found",
+          "reason": "Answer is a not-found response"
+        }
+      ],
+      "invalid_markers": [],
+      "is_not_found": true,
+      "final_citations": []
+    },
+    {
+      "id": "trap-01",
+      "trial": 2,
+      "source": "trap",
+      "question": "What exact-match score does SparseRoute achieve on NaturalQuestions-Long?",
+      "answerable": false,
+      "raw_answer": "I could not find this in the provided documents.",
+      "clean_answer": "I could not find this in the provided documents.",
+      "latency_ms": 2823.4,
+      "status": "success",
+      "marker_actions": [
+        {
+          "action": "not_found",
+          "reason": "Answer is a not-found response"
+        }
+      ],
+      "invalid_markers": [],
+      "is_not_found": true,
+      "final_citations": []
+    },
+    {
+      "id": "trap-01",
+      "trial": 3,
+      "source": "trap",
+      "question": "What exact-match score does SparseRoute achieve on NaturalQuestions-Long?",
+      "answerable": false,
+      "raw_answer": "I could not find this in the provided documents.",
+      "clean_answer": "I could not find this in the provided documents.",
+      "latency_ms": 2025.9,
+      "status": "success",
+      "marker_actions": [
+        {
+          "action": "not_found",
+          "reason": "Answer is a not-found response"
+        }
+      ],
+      "invalid_markers": [],
+      "is_not_found": true,
+      "final_citations": []
+    },
+    {
+      "id": "trap-02",
+      "trial": 1,
+      "source": "trap",
+      "question": "What F1 score does TreeWalk achieve on HotpotQA?",
+      "answerable": false,
+      "raw_answer": "I could not find this in the provided documents.",
+      "clean_answer": "I could not find this in the provided documents.",
+      "latency_ms": 2038.1,
+      "status": "success",
+      "marker_actions": [
+        {
+          "action": "not_found",
+          "reason": "Answer is a not-found response"
+        }
+      ],
+      "invalid_markers": [],
+      "is_not_found": true,
+      "final_citations": []
+    },
+    {
+      "id": "trap-02",
+      "trial": 2,
+      "source": "trap",
+      "question": "What F1 score does TreeWalk achieve on HotpotQA?",
+      "answerable": false,
+      "raw_answer": "I could not find this in the provided documents.",
+      "clean_answer": "I could not find this in the provided documents.",
+      "latency_ms": 1942.3,
+      "status": "success",
+      "marker_actions": [
+        {
+          "action": "not_found",
+          "reason": "Answer is a not-found response"
+        }
+      ],
+      "invalid_markers": [],
+      "is_not_found": true,
+      "final_citations": []
+    },
+    {
+      "id": "trap-02",
+      "trial": 3,
+      "source": "trap",
+      "question": "What F1 score does TreeWalk achieve on HotpotQA?",
+      "answerable": false,
+      "raw_answer": "I could not find this in the provided documents.",
+      "clean_answer": "I could not find this in the provided documents.",
+      "latency_ms": 9079.0,
+      "status": "success",
+      "marker_actions": [
+        {
+          "action": "not_found",
+          "reason": "Answer is a not-found response"
+        }
+      ],
+      "invalid_markers": [],
+      "is_not_found": true,
+      "final_citations": []
+    },
+    {
+      "id": "trap-03",
+      "trial": 1,
+      "source": "trap",
+      "question": "What is Veloura's IRR in the upside scenario?",
+      "answerable": false,
+      "raw_answer": "I could not find this in the provided documents.",
+      "clean_answer": "I could not find this in the provided documents.",
+      "latency_ms": 4695.5,
+      "status": "success",
+      "marker_actions": [
+        {
+          "action": "not_found",
+          "reason": "Answer is a not-found response"
+        }
+      ],
+      "invalid_markers": [],
+      "is_not_found": true,
+      "final_citations": []
+    },
+    {
+      "id": "trap-03",
+      "trial": 2,
+      "source": "trap",
+      "question": "What is Veloura's IRR in the upside scenario?",
+      "answerable": false,
+      "raw_answer": "I could not find this in the provided documents.",
+      "clean_answer": "I could not find this in the provided documents.",
+      "latency_ms": 10146.1,
+      "status": "success",
+      "marker_actions": [
+        {
+          "action": "not_found",
+          "reason": "Answer is a not-found response"
+        }
+      ],
+      "invalid_markers": [],
+      "is_not_found": true,
+      "final_citations": []
+    },
+    {
+      "id": "trap-03",
+      "trial": 3,
+      "source": "trap",
+      "question": "What is Veloura's IRR in the upside scenario?",
+      "answerable": false,
+      "raw_answer": "I could not find this in the provided documents.",
+      "clean_answer": "I could not find this in the provided documents.",
+      "latency_ms": 11934.7,
+      "status": "success",
+      "marker_actions": [
+        {
+          "action": "not_found",
+          "reason": "Answer is a not-found response"
+        }
+      ],
+      "invalid_markers": [],
+      "is_not_found": true,
+      "final_citations": []
+    },
+    {
+      "id": "trap-04",
+      "trial": 1,
+      "source": "trap",
+      "question": "How many dark stores does Veloura currently operate in Chennai?",
+      "answerable": false,
+      "raw_answer": "I could not find this in the provided documents.",
+      "clean_answer": "I could not find this in the provided documents.",
+      "latency_ms": 8388.1,
+      "status": "success",
+      "marker_actions": [
+        {
+          "action": "not_found",
+          "reason": "Answer is a not-found response"
+        }
+      ],
+      "invalid_markers": [],
+      "is_not_found": true,
+      "final_citations": []
+    },
+    {
+      "id": "trap-04",
+      "trial": 2,
+      "source": "trap",
+      "question": "How many dark stores does Veloura currently operate in Chennai?",
+      "answerable": false,
+      "raw_answer": "I could not find this in the provided documents.",
+      "clean_answer": "I could not find this in the provided documents.",
+      "latency_ms": 13066.8,
+      "status": "success",
+      "marker_actions": [
+        {
+          "action": "not_found",
+          "reason": "Answer is a not-found response"
+        }
+      ],
+      "invalid_markers": [],
+      "is_not_found": true,
+      "final_citations": []
+    },
+    {
+      "id": "trap-04",
+      "trial": 3,
+      "source": "trap",
+      "question": "How many dark stores does Veloura currently operate in Chennai?",
+      "answerable": false,
+      "raw_answer": "I could not find this in the provided documents.",
+      "clean_answer": "I could not find this in the provided documents.",
+      "latency_ms": 12899.1,
+      "status": "success",
+      "marker_actions": [
+        {
+          "action": "not_found",
+          "reason": "Answer is a not-found response"
+        }
+      ],
+      "invalid_markers": [],
+      "is_not_found": true,
+      "final_citations": []
+    },
+    {
+      "id": "trap-05",
+      "trial": 1,
+      "source": "trap",
+      "question": "What is the projected revenue for Year 6 of Project Lotus?",
+      "answerable": false,
+      "raw_answer": "I could not find this in the provided documents.",
+      "clean_answer": "I could not find this in the provided documents.",
+      "latency_ms": 11142.0,
+      "status": "success",
+      "marker_actions": [
+        {
+          "action": "not_found",
+          "reason": "Answer is a not-found response"
+        }
+      ],
+      "invalid_markers": [],
+      "is_not_found": true,
+      "final_citations": []
+    },
+    {
+      "id": "trap-05",
+      "trial": 2,
+      "source": "trap",
+      "question": "What is the projected revenue for Year 6 of Project Lotus?",
+      "answerable": false,
+      "raw_answer": "I could not find this in the provided documents.",
+      "clean_answer": "I could not find this in the provided documents.",
+      "latency_ms": 15764.5,
+      "status": "success",
+      "marker_actions": [
+        {
+          "action": "not_found",
+          "reason": "Answer is a not-found response"
+        }
+      ],
+      "invalid_markers": [],
+      "is_not_found": true,
+      "final_citations": []
+    },
+    {
+      "id": "trap-05",
+      "trial": 3,
+      "source": "trap",
+      "question": "What is the projected revenue for Year 6 of Project Lotus?",
+      "answerable": false,
+      "raw_answer": "I could not find this in the provided documents.",
+      "clean_answer": "I could not find this in the provided documents.",
+      "latency_ms": 15143.8,
+      "status": "success",
+      "marker_actions": [
+        {
+          "action": "not_found",
+          "reason": "Answer is a not-found response"
+        }
+      ],
+      "invalid_markers": [],
+      "is_not_found": true,
+      "final_citations": []
+    },
+    {
+      "id": "trap-06",
+      "trial": 1,
+      "source": "trap",
+      "question": "How much did Veloura spend on marketing in FY2025?",
+      "answerable": false,
+      "raw_answer": "I could not find this in the provided documents.",
+      "clean_answer": "I could not find this in the provided documents.",
+      "latency_ms": 8988.0,
+      "status": "success",
+      "marker_actions": [
+        {
+          "action": "not_found",
+          "reason": "Answer is a not-found response"
+        }
+      ],
+      "invalid_markers": [],
+      "is_not_found": true,
+      "final_citations": []
+    },
+    {
+      "id": "trap-06",
+      "trial": 2,
+      "source": "trap",
+      "question": "How much did Veloura spend on marketing in FY2025?",
+      "answerable": false,
+      "raw_answer": "I could not find this in the provided documents.",
+      "clean_answer": "I could not find this in the provided documents.",
+      "latency_ms": 12597.2,
+      "status": "success",
+      "marker_actions": [
+        {
+          "action": "not_found",
+          "reason": "Answer is a not-found response"
+        }
+      ],
+      "invalid_markers": [],
+      "is_not_found": true,
+      "final_citations": []
+    },
+    {
+      "id": "trap-06",
+      "trial": 3,
+      "source": "trap",
+      "question": "How much did Veloura spend on marketing in FY2025?",
+      "answerable": false,
+      "raw_answer": "I could not find this in the provided documents.",
+      "clean_answer": "I could not find this in the provided documents.",
+      "latency_ms": 12438.1,
+      "status": "success",
+      "marker_actions": [
+        {
+          "action": "not_found",
+          "reason": "Answer is a not-found response"
+        }
+      ],
+      "invalid_markers": [],
+      "is_not_found": true,
+      "final_citations": []
+    },
+    {
+      "id": "trap-07",
+      "trial": 1,
+      "source": "trap",
+      "question": "What is the average order value in Indore specifically?",
+      "answerable": false,
+      "raw_answer": "I could not find this in the provided documents.",
+      "clean_answer": "I could not find this in the provided documents.",
+      "latency_ms": 9291.3,
+      "status": "success",
+      "marker_actions": [
+        {
+          "action": "not_found",
+          "reason": "Answer is a not-found response"
+        }
+      ],
+      "invalid_markers": [],
+      "is_not_found": true,
+      "final_citations": []
+    },
+    {
+      "id": "trap-07",
+      "trial": 2,
+      "source": "trap",
+      "question": "What is the average order value in Indore specifically?",
+      "answerable": false,
+      "raw_answer": "I could not find this in the provided documents.",
+      "clean_answer": "I could not find this in the provided documents.",
+      "latency_ms": 12894.9,
+      "status": "success",
+      "marker_actions": [
+        {
+          "action": "not_found",
+          "reason": "Answer is a not-found response"
+        }
+      ],
+      "invalid_markers": [],
+      "is_not_found": true,
+      "final_citations": []
+    },
+    {
+      "id": "trap-07",
+      "trial": 3,
+      "source": "trap",
+      "question": "What is the average order value in Indore specifically?",
+      "answerable": false,
+      "raw_answer": "I could not find this in the provided documents.",
+      "clean_answer": "I could not find this in the provided documents.",
+      "latency_ms": 13510.6,
+      "status": "success",
+      "marker_actions": [
+        {
+          "action": "not_found",
+          "reason": "Answer is a not-found response"
+        }
+      ],
+      "invalid_markers": [],
+      "is_not_found": true,
+      "final_citations": []
+    },
+    {
+      "id": "trap-08",
+      "trial": 1,
+      "source": "trap",
+      "question": "What batch size was used to train the SparseRoute router?",
+      "answerable": false,
+      "raw_answer": "I could not find this in the provided documents.",
+      "clean_answer": "I could not find this in the provided documents.",
+      "latency_ms": 6398.4,
+      "status": "success",
+      "marker_actions": [
+        {
+          "action": "not_found",
+          "reason": "Answer is a not-found response"
+        }
+      ],
+      "invalid_markers": [],
+      "is_not_found": true,
+      "final_citations": []
+    },
+    {
+      "id": "trap-08",
+      "trial": 2,
+      "source": "trap",
+      "question": "What batch size was used to train the SparseRoute router?",
+      "answerable": false,
+      "raw_answer": "I could not find this in the provided documents.",
+      "clean_answer": "I could not find this in the provided documents.",
+      "latency_ms": 12285.0,
+      "status": "success",
+      "marker_actions": [
+        {
+          "action": "not_found",
+          "reason": "Answer is a not-found response"
+        }
+      ],
+      "invalid_markers": [],
+      "is_not_found": true,
+      "final_citations": []
+    },
+    {
+      "id": "trap-08",
+      "trial": 3,
+      "source": "trap",
+      "question": "What batch size was used to train the SparseRoute router?",
+      "answerable": false,
+      "raw_answer": "I could not find this in the provided documents.",
+      "clean_answer": "I could not find this in the provided documents.",
+      "latency_ms": 11498.4,
+      "status": "success",
+      "marker_actions": [
+        {
+          "action": "not_found",
+          "reason": "Answer is a not-found response"
+        }
+      ],
+      "invalid_markers": [],
+      "is_not_found": true,
+      "final_citations": []
+    }
+  ]
+}

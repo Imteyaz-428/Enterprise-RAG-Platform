@@ -18,5 +18,5 @@ class User(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     organization = relationship("Organization", back_populates="users")
-    documents = relationship("Document", back_populates="uploader", cascade="all, delete-orphan")
+    documents = relationship("Document", back_populates="uploader")
     chat_sessions = relationship("ChatSession", back_populates="user", cascade="all, delete-orphan")

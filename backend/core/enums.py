@@ -5,3 +5,6 @@ class UserRole(str, Enum):
     MANAGER = "manager"
     EMPLOYEE = "employee"
     SUPER_ADMIN = "super_admin"
+
+# Alias to represent standard User role
+UserRole.USER = UserRole.EMPLOYEE

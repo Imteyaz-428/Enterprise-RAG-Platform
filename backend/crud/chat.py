@@ -30,6 +30,7 @@ def generate_rag_answer(db: Session,current_user: User,document_id: int,question
     # Step 2: Retrieve similar chunks
     chunks = search_similar_chunks(
         db=db,
+        organization_id=current_user.organization_id,
         document_id=document_id,
         query_embedding=query_embedding,
     )

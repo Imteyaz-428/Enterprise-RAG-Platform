@@ -1,7 +1,9 @@
 import concurrent.futures
 import os
 import re
-from typing import Iterator, Any
+import threading
+import time
+from typing import Iterator, Any, Callable
 from services.ai.config import RAG_PROVIDERS, load_environment
 from services.ai.providers.base_provider import BaseProvider
 from services.ai.providers.gemini_provider import GeminiProvider
@@ -9,7 +11,7 @@ from services.ai.providers.groq_provider import GroqProvider
 from services.ai.providers.deepseek_provider import DeepSeekProvider
 
 from utils.logger import logger
-from utils.retry import retry_request
+from utils.retry import retry_request, is_transient_error
 
 load_environment()
 
@@ -62,7 +64,7 @@ def classify_provider_error(exc: Exception) -> str:
 
 class AIService:
 
-    def __init__(self):
+    def __init__(self, clock: Callable[[], float] | None = None):
         # Register provider classes
         self.provider_classes = {
             "gemini": GeminiProvider,
@@ -72,6 +74,110 @@ class AIService:
 
         # Cache provider instances
         self.provider_instances = {}
+
+        # Thread-safe in-memory provider cooldown management
+        self.clock = clock or time.time
+        self._cooldown_lock = threading.Lock()
+        self._provider_cooldowns: dict[str, float] = {}
+
+    def _get_time(self) -> float:
+        return self.clock()
+
+    def is_cooling_down(self, provider_name: str) -> bool:
+        """Checks if a provider is currently cooling down."""
+        with self._cooldown_lock:
+            cooldown_until = self._provider_cooldowns.get(provider_name, 0.0)
+            return cooldown_until > self._get_time()
+
+    def set_cooldown(self, provider_name: str, delay_seconds: float) -> None:
+        """Sets a cooldown period for a provider, capped at 15 minutes (900 seconds)."""
+        with self._cooldown_lock:
+            capped_delay = min(max(float(delay_seconds), 0.0), 900.0)
+            self._provider_cooldowns[provider_name] = self._get_time() + capped_delay
+            logger.warning(
+                f"Provider [{provider_name}] cooldown initiated for {capped_delay:.1f}s (until {self._provider_cooldowns[provider_name]:.1f})"
+            )
+
+    def reset_cooldown(self, provider_name: str) -> None:
+        """Resets the cooldown for a provider."""
+        with self._cooldown_lock:
+            self._provider_cooldowns.pop(provider_name, None)
+
+    def clear_all_cooldowns(self) -> None:
+        """Clears all provider cooldowns."""
+        with self._cooldown_lock:
+            self._provider_cooldowns.clear()
+
+    @staticmethod
+    def _parse_retry_delay(exc: Exception) -> float:
+        """
+        Parses retry delay from exception attributes, response headers, or error message.
+        Capped at 15 minutes (900 seconds), defaults to 60 seconds if unparseable.
+        """
+        delay = None
+
+        # 1. Attribute on exception
+        for attr in ("retry_after", "retry_delay"):
+            val = getattr(exc, attr, None)
+            if val is not None:
+                try:
+                    delay = float(val)
+                    break
+                except (ValueError, TypeError):
+                    pass
+
+        # 2. HTTP response headers
+        if delay is None:
+            response = getattr(exc, "response", None)
+            if response is not None:
+                headers = getattr(response, "headers", None)
+                if headers and hasattr(headers, "get"):
+                    header_val = headers.get("retry-after") or headers.get("Retry-After")
+                    if header_val is not None:
+                        try:
+                            delay = float(header_val)
+                        except (ValueError, TypeError):
+                            pass
+
+        # 3. Regex in message string
+        if delay is None:
+            msg = str(exc)
+            patterns = [
+                r'[\'"]?retryDelay[\'"]?\s*[:=]\s*[\'"]?([0-9]+(?:\.[0-9]+)?)\s*(s|sec|seconds?|m|min|minutes?)?[\'"]?',
+                r'(?:retry(?:[-_ ]after)?|retry\s+in|wait|resets?(?:\s+in)?|try\s+again\s+in)\s*(?:is\s*)?[:=]?\s*([0-9]+(?:\.[0-9]+)?)\s*(s|sec|seconds?|m|min|minutes?)?',
+                r'([0-9]+(?:\.[0-9]+)?)\s*(?:s|sec|seconds?)\s*(?:remaining|before\s+retry)',
+            ]
+            for pat in patterns:
+                m = re.search(pat, msg, re.IGNORECASE)
+                if m:
+                    try:
+                        val = float(m.group(1))
+                        unit = m.group(2).lower() if len(m.groups()) > 1 and m.group(2) else "s"
+                        if unit.startswith("m"):
+                            val *= 60.0
+                        delay = val
+                        break
+                    except (ValueError, TypeError, IndexError):
+                        pass
+
+        if delay is not None and delay > 0:
+            return min(delay, 900.0)  # Capped at 15 minutes
+        return 60.0  # Default 60 seconds
+
+    @staticmethod
+    def _is_rate_limit_or_quota_error(exc: Exception, category: str) -> bool:
+        """Determines if an exception corresponds to a rate_limit or quota error."""
+        if category == "rate_limit":
+            return True
+        status_code = getattr(exc, "status_code", getattr(exc, "code", None))
+        if status_code is not None:
+            try:
+                if int(status_code) == 429:
+                    return True
+            except (ValueError, TypeError):
+                pass
+        msg = str(exc).lower()
+        return any(term in msg for term in ("429", "rate limit", "ratelimit", "too many requests", "quota", "resource_exhausted"))
 
     @staticmethod
     def _sanitize_error(err_msg: str) -> str:
@@ -124,8 +230,20 @@ class AIService:
         if not candidate_providers:
             raise AIProviderError("All AI providers failed. Details: No providers configured.")
 
+        # Order of attempt:
+        # 1. Non-cooling providers first
+        # 2. If ALL providers are cooling down, still try them in order (never return nothing without trying)
+        # 3. Cooling providers as last-resort fallback if active fail
+        active_candidates = [p for p in candidate_providers if not self.is_cooling_down(p)]
+        cooling_candidates = [p for p in candidate_providers if self.is_cooling_down(p)]
+
+        if not active_candidates:
+            providers_to_try = list(candidate_providers)
+        else:
+            providers_to_try = active_candidates + cooling_candidates
+
         provider_errors = {}
-        for provider_name in candidate_providers:
+        for provider_name in providers_to_try:
             try:
                 logger.info(f"Using AI Provider: {provider_name}")
                 provider = self._get_provider(provider_name)
@@ -140,21 +258,35 @@ class AIService:
                             executor.shutdown(wait=False, cancel_futures=True)
                     return provider.generate(prompt)
 
-                # Execute generation with retry for transient errors
+                # Execute generation with retry for transient errors (rate limit/quota fails immediately to next provider)
+                def _is_retryable(exc: BaseException) -> bool:
+                    cat = classify_provider_error(exc)
+                    if self._is_rate_limit_or_quota_error(exc, cat):
+                        return False
+                    return is_transient_error(exc)
+
                 response = retry_request(
                     _call_provider,
                     max_attempts=max_attempts,
+                    retry_predicate=_is_retryable,
                 )
 
                 # Validate response is non-empty
                 if not response or not str(response).strip():
                     raise ValueError(f"{provider_name} returned empty or invalid response")
 
+                # Successful generation resets cooldown
+                self.reset_cooldown(provider_name)
+
                 logger.info(f"AI Provider [{provider_name}] generated response successfully.")
                 return str(response)
 
             except Exception as e:
                 category = classify_provider_error(e)
+                if self._is_rate_limit_or_quota_error(e, category):
+                    delay = self._parse_retry_delay(e)
+                    self.set_cooldown(provider_name, delay)
+
                 safe_err = self._sanitize_error(str(e))
                 logger.warning(
                     f"AI Provider [{provider_name}] failed (category: {category}): {safe_err}"
@@ -201,7 +333,15 @@ class AIService:
         token_iterator = None
         provider_errors = {}
 
-        for provider_name in target_providers:
+        active_candidates = [p for p in target_providers if not self.is_cooling_down(p)]
+        cooling_candidates = [p for p in target_providers if self.is_cooling_down(p)]
+
+        if not active_candidates:
+            providers_to_try = list(target_providers)
+        else:
+            providers_to_try = active_candidates + cooling_candidates
+
+        for provider_name in providers_to_try:
             try:
                 logger.info(f"Attempting AI Provider (stream): {provider_name}")
                 provider = self._get_provider(provider_name)
@@ -219,13 +359,27 @@ class AIService:
                         raise ValueError(f"{provider_name} returned an empty stream")
                     return first, it
 
-                first_token, token_iterator = retry_request(_init_stream)
+                def _is_retryable(exc: BaseException) -> bool:
+                    cat = classify_provider_error(exc)
+                    if self._is_rate_limit_or_quota_error(exc, cat):
+                        return False
+                    return is_transient_error(exc)
+
+                first_token, token_iterator = retry_request(
+                    _init_stream,
+                    retry_predicate=_is_retryable,
+                )
                 active_provider = provider_name
+                self.reset_cooldown(provider_name)
                 logger.info(f"Active streaming provider committed: {provider_name}")
                 break
 
             except Exception as e:
                 category = classify_provider_error(e)
+                if self._is_rate_limit_or_quota_error(e, category):
+                    delay = self._parse_retry_delay(e)
+                    self.set_cooldown(provider_name, delay)
+
                 safe_err = self._sanitize_error(str(e))
                 logger.warning(
                     f"AI Provider [{provider_name}] stream initialization failed (category: {category}): {safe_err}"

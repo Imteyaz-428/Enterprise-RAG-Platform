@@ -54,10 +54,12 @@ def is_transient_error(exc: BaseException) -> bool:
     return False
 
 
-def retry_request(func, *args, max_attempts: int | None = None, **kwargs):
+def retry_request(func, *args, max_attempts: int | None = None, retry_predicate=None, **kwargs):
     attempts = max_attempts if max_attempts is not None else ai_config.AI_MAX_RETRIES
     if attempts <= 1:
         return func(*args, **kwargs)
+
+    predicate = retry_predicate if retry_predicate is not None else is_transient_error
 
     for attempt in Retrying(
         stop=stop_after_attempt(attempts),
@@ -66,7 +68,7 @@ def retry_request(func, *args, max_attempts: int | None = None, **kwargs):
             min=ai_config.AI_RETRY_MIN_WAIT,
             max=ai_config.AI_RETRY_MAX_WAIT,
         ),
-        retry=retry_if_exception(is_transient_error),
+        retry=retry_if_exception(predicate),
         reraise=True,
     ):
         with attempt:

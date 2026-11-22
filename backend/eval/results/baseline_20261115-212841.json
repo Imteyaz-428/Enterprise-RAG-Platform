@@ -1,0 +1,154 @@
+{
+  "label": "baseline",
+  "timestamp": "2026-11-15T21:28:41",
+  "k": 5,
+  "org_id": 2,
+  "no_rerank": false,
+  "summary": {
+    "n_scored": 5,
+    "n_errors": 0,
+    "n_dataset_errors": 9,
+    "n_unanswerable_skipped": 2,
+    "hit@1": 0.8,
+    "hit@3": 1.0,
+    "hit@5": 1.0,
+    "mrr": 0.9,
+    "page_match": 1.0,
+    "dup_rate": 0.0,
+    "latency_ms_mean": 17913.9,
+    "latency_ms_p95": 22229.8
+  },
+  "rows": [
+    {
+      "id": "os-01",
+      "source": "os-lab",
+      "question": "Which system call creates a new child process?",
+      "status": "hit",
+      "rank": 1,
+      "page_ok": true,
+      "dup_rate": 0.0,
+      "latency_ms": 8656.4,
+      "top1_doc": "os_lab.pdf",
+      "top1_page": 1,
+      "top1_text": "Experiment No :- 04  Aim :- To study and execute various process management system calls such as fork(),  exec(), wait(), and getpid() in Li"
+    },
+    {
+      "id": "os-02",
+      "source": "os-lab",
+      "question": "What does the exec() system call do?",
+      "status": "hit",
+      "rank": 1,
+      "page_ok": true,
+      "dup_rate": 0.0,
+      "latency_ms": 15441.8,
+      "top1_doc": "os_lab.pdf",
+      "top1_page": 1,
+      "top1_text": "Experiment No :- 04  Aim :- To study and execute various process management system calls such as fork(),  exec(), wait(), and getpid() in Li"
+    },
+    {
+      "id": "os-03",
+      "source": "os-lab",
+      "question": "In the FCFS experiment, how is the waiting time of each process after the first one calculated?",
+      "status": "hit",
+      "rank": 1,
+      "page_ok": true,
+      "dup_rate": 0.0,
+      "latency_ms": 21854.2,
+      "top1_doc": "os_lab.pdf",
+      "top1_page": 5,
+      "top1_text": "4.  Set waiting time of first process = 0  5.  For each process i from 2 to n:                → Waiting Time[i] = Waiting Time[i-1] + Burst "
+    },
+    {
+      "id": "os-04",
+      "source": "os-lab",
+      "question": "What are the disadvantages of Shortest Job First scheduling?",
+      "status": "hit",
+      "rank": 1,
+      "page_ok": true,
+      "dup_rate": 0.0,
+      "latency_ms": 21387.5,
+      "top1_doc": "os_lab.pdf",
+      "top1_page": 8,
+      "top1_text": "Experiment No - 06  Aim :-  Implement CPU scheduling - Shortest Job First(SJB)  Theory :-    Shortest Job First (SJF) is a CPU scheduling al"
+    },
+    {
+      "id": "os-05",
+      "source": "os-lab",
+      "question": "What does the parent process do after calling fork() in the algorithm?",
+      "status": "hit",
+      "rank": 2,
+      "page_ok": true,
+      "dup_rate": 0.0,
+      "latency_ms": 22229.8,
+      "top1_doc": "os_lab.pdf",
+      "top1_page": 1,
+      "top1_text": "Experiment No :- 04  Aim :- To study and execute various process management system calls such as fork(),  exec(), wait(), and getpid() in Li"
+    },
+    {
+      "id": "mba-01",
+      "source": "mba-report",
+      "question": "How many valid responses were collected from retail investors?",
+      "status": "dataset_error"
+    },
+    {
+      "id": "mba-02",
+      "source": "mba-report",
+      "question": "What percentage of respondents preferred mutual funds overall?",
+      "status": "dataset_error"
+    },
+    {
+      "id": "mba-03",
+      "source": "mba-report",
+      "question": "What research design does the study adopt?",
+      "status": "dataset_error"
+    },
+    {
+      "id": "mba-04",
+      "source": "mba-report",
+      "question": "What are the limitations of the study?",
+      "status": "dataset_error"
+    },
+    {
+      "id": "mba-05",
+      "source": "mba-report",
+      "question": "Which earlier study surveyed 100 individual investors in Lucknow?",
+      "status": "dataset_error"
+    },
+    {
+      "id": "mba-06",
+      "source": "mba-report",
+      "question": "Which theory explains investment choice based on risk and return?",
+      "status": "dataset_error"
+    },
+    {
+      "id": "web-01",
+      "source": "google-paper",
+      "question": "How is PageRank computed, and what does it correspond to?",
+      "status": "dataset_error"
+    },
+    {
+      "id": "web-02",
+      "source": "google-paper",
+      "question": "Why does the search engine associate anchor text with the page the link points to?",
+      "status": "dataset_error"
+    },
+    {
+      "id": "web-03",
+      "source": "google-paper",
+      "question": "Where does the name Google come from?",
+      "status": "dataset_error"
+    },
+    {
+      "id": "none-01",
+      "source": "unanswerable",
+      "question": "What is the refund policy for unused tuition fees?",
+      "status": "skipped_unanswerable"
+    },
+    {
+      "id": "none-02",
+      "source": "unanswerable",
+      "question": "Who won the 2022 FIFA World Cup?",
+      "status": "skipped_unanswerable"
+    }
+  ]
+}

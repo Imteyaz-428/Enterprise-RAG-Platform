@@ -1,0 +1,5 @@
+timestamp,label,org_id,n_total,n_answerable,n_unanswerable,n_errors,refusal_rate,answered_with_citation_rate,citation_anchor_rate,not_found_rate,latency_ms_mean,latency_ms_p95
+2026-11-21T14:58:15,answers-before-prompt,1,31,28,3,0,0.0,1.0,0.814,1.0,7392.1,14307.2
+2026-11-21T15:10:40,answers-after-prompt,1,31,28,3,0,0.0,1.0,0.745,1.0,11381.4,15888.7
+2026-11-21T16:15:41,traps-r3,1,24,0,24,0,0.0,0.0,0.0,1.0,9349.0,15143.8
+2026-11-21T16:23:15,answers-after-fix,1,37,28,9,0,0.0,1.0,0.729,1.0,7719.5,13795.7

@@ -1,0 +1,14 @@
+.env
+.venv
+uploads
+logs
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache
+*.zip
+eval/results
+node_modules
+.git
+.github

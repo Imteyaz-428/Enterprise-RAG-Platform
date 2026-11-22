@@ -11,6 +11,8 @@ from core.dependencies import (
     get_current_user,
     is_platform_admin,
     require_platform_admin,
+    has_role,
+    UserRole,
 )
 from dependencies.database import get_db
 from schemas.organization import (
@@ -47,8 +49,7 @@ def get_all_organizations(
     if is_platform_admin(current_user):
         return get_organizations(db)
 
-    role_val = current_user.role.value if hasattr(current_user.role, "value") else str(current_user.role)
-    if role_val == "admin":
+    if has_role(current_user, UserRole.ADMIN):
         return [get_organization_by_id(db, current_user.organization_id)]
 
     raise HTTPException(
@@ -87,9 +88,8 @@ def update_org(
     current_user: User = Depends(get_current_user),
 ):
     is_platform = is_platform_admin(current_user)
-    role_val = current_user.role.value if hasattr(current_user.role, "value") else str(current_user.role)
 
-    if not is_platform and role_val != "admin":
+    if not is_platform and not has_role(current_user, UserRole.ADMIN):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Admin access required",
@@ -117,9 +117,8 @@ def delete_org(
     current_user: User = Depends(get_current_user),
 ):
     is_platform = is_platform_admin(current_user)
-    role_val = current_user.role.value if hasattr(current_user.role, "value") else str(current_user.role)
 
-    if not is_platform and role_val != "admin":
+    if not is_platform and not has_role(current_user, UserRole.ADMIN):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Admin access required",

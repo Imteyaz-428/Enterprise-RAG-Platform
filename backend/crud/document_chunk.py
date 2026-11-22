@@ -1,4 +1,3 @@
-
 from sqlalchemy.orm import Session
 from sqlalchemy import func, or_
 
@@ -13,9 +12,15 @@ def create_document_chunk(
     chunk_text: str,
     embedding: list[float],
     page_number: int | None = None,
+    organization_id: int | None = None,
 ):
+    if organization_id is None:
+        doc = db.query(Document.organization_id).filter(Document.id == document_id).first()
+        organization_id = doc[0] if doc else None
+
     chunk = DocumentChunk(
         document_id=document_id,
+        organization_id=organization_id,
         chunk_index=chunk_index,
         chunk_text=chunk_text,
         embedding=embedding,
@@ -35,15 +40,21 @@ def create_document_chunk(
 
 def search_similar_chunks(
     db: Session,
-    organization_id: int,
-    query_embedding: list[float],
+    organization_id: int | None = None,
+    query_embedding: list[float] | None = None,
     top_k: int = 5,
+    document_id: int | None = None,
 ):
+    if organization_id is None and document_id is not None:
+        doc_org = db.query(Document.organization_id).filter(Document.id == document_id).first()
+        if doc_org:
+            organization_id = doc_org[0]
+
     distance = DocumentChunk.embedding.cosine_distance(
         query_embedding
     )
 
-    return (
+    query = (
         db.query(
             DocumentChunk,
             Document,
@@ -54,10 +65,18 @@ def search_similar_chunks(
             DocumentChunk.document_id == Document.id,
         )
         .filter(
-            Document.organization_id == organization_id,
+            Document.status == "completed",
             DocumentChunk.embedding.isnot(None),
         )
-        .order_by(distance.asc())
+    )
+
+    if organization_id is not None:
+        query = query.filter(DocumentChunk.organization_id == organization_id)
+    if document_id is not None:
+        query = query.filter(DocumentChunk.document_id == document_id)
+
+    return (
+        query.order_by(distance.asc())
         .limit(top_k)
         .all()
     )
@@ -73,6 +92,7 @@ def search_keyword_chunks(
     organization_id: int,
     query: str,
     top_k: int = 5,
+    document_id: int | None = None,
 ):
     search_vector = func.to_tsvector(
         "english",
@@ -97,7 +117,6 @@ def search_keyword_chunks(
     ]
 
     # Calculate ranking as the sum of individual term scores.
-    # No tsquery-to-tsquery OR operator is required.
     keyword_score = sum(
         (
             func.ts_rank_cd(search_vector, keyword_query)
@@ -106,7 +125,7 @@ def search_keyword_chunks(
         0,
     )
 
-    return (
+    query_builder = (
         db.query(
             DocumentChunk,
             Document,
@@ -117,11 +136,18 @@ def search_keyword_chunks(
             Document.id == DocumentChunk.document_id,
         )
         .filter(
-            Document.organization_id == organization_id,
+            DocumentChunk.organization_id == organization_id,
+            Document.status == "completed",
             DocumentChunk.embedding.isnot(None),
             or_(*conditions),
         )
-        .order_by(keyword_score.desc())
+    )
+
+    if document_id is not None:
+        query_builder = query_builder.filter(DocumentChunk.document_id == document_id)
+
+    return (
+        query_builder.order_by(keyword_score.desc())
         .limit(top_k)
         .all()
     )

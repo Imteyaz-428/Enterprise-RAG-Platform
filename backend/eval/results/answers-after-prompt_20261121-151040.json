@@ -1,0 +1,1220 @@
+{
+  "label": "answers-after-prompt",
+  "timestamp": "2026-11-21T15:10:40",
+  "org_id": 1,
+  "dataset": "eval/bench_org1.jsonl",
+  "summary": {
+    "n_total": 31,
+    "n_answerable": 28,
+    "n_unanswerable": 3,
+    "n_errors": 0,
+    "refusal_rate": 0.0,
+    "answered_with_citation_rate": 1.0,
+    "citation_anchor_rate": 0.745,
+    "total_citations": 47,
+    "supported_citations": 35,
+    "not_found_rate": 1.0,
+    "latency_ms_mean": 11381.4,
+    "latency_ms_p95": 15888.7
+  },
+  "rows": [
+    {
+      "id": "mba-01",
+      "source": "mba-report",
+      "question": "How many dark stores does Veloura currently operate, and in how many cities?",
+      "answerable": true,
+      "raw_answer": "Veloura currently operates 118 dark stores across eight metropolitan cities [2].",
+      "clean_answer": "Veloura currently operates 118 dark stores across eight metropolitan cities [2].",
+      "latency_ms": 22075.0,
+      "status": "success",
+      "is_refusal": false,
+      "answered_with_citation": true,
+      "total_citations": 1,
+      "supported_citations": 1,
+      "citation_details": [
+        {
+          "id": 2,
+          "document": "mba_report.pdf",
+          "page_number": 1,
+          "has_anchor": true
+        }
+      ],
+      "final_citations": [
+        {
+          "id": 2,
+          "document": "mba_report.pdf",
+          "chunk_index": 0,
+          "document_id": 7,
+          "page_number": 1,
+          "snippet": "Synthetic document generated for RAG evaluation. All companies and figures are fictional. Page 1 Project Lotus: Entering the Tier-2 Quick-Commerce Market in India Strategic Expansion Analysis for Velo"
+        }
+      ]
+    },
+    {
+      "id": "mba-02",
+      "source": "mba-report",
+      "question": "What total capital investment does Project Lotus require in the base case?",
+      "answerable": true,
+      "raw_answer": "In the base case, Project Lotus requires a total capital investment of INR 410 crore [1][2].",
+      "clean_answer": "In the base case, Project Lotus requires a total capital investment of INR 410 crore [1][2].",
+      "latency_ms": 9542.4,
+      "status": "success",
+      "is_refusal": false,
+      "answered_with_citation": true,
+      "total_citations": 2,
+      "supported_citations": 2,
+      "citation_details": [
+        {
+          "id": 1,
+          "document": "mba_report.pdf",
+          "page_number": 1,
+          "has_anchor": true
+        },
+        {
+          "id": 2,
+          "document": "mba_report.pdf",
+          "page_number": 1,
+          "has_anchor": true
+        }
+      ],
+      "final_citations": [
+        {
+          "id": 1,
+          "document": "mba_report.pdf",
+          "chunk_index": 0,
+          "document_id": 7,
+          "page_number": 1,
+          "snippet": "Synthetic document generated for RAG evaluation. All companies and figures are fictional. Page 1 Project Lotus: Entering the Tier-2 Quick-Commerce Market in India Strategic Expansion Analysis for Velo"
+        },
+        {
+          "id": 2,
+          "document": "mba_report.pdf",
+          "chunk_index": 1,
+          "document_id": 7,
+          "page_number": 1,
+          "snippet": "the base case, the company requires a total capital investment of INR 410 crore, reaches city-level break-even in an average of 19 months, and generates a cumulative 5-year IRR of 22.4%. The recommend"
+        }
+      ]
+    },
+    {
+      "id": "mba-03",
+      "source": "mba-report",
+      "question": "What cumulative five-year IRR does the base case reach?",
+      "answerable": true,
+      "raw_answer": "The base case generates a cumulative 5-year IRR of 22.4% [1][3].",
+      "clean_answer": "The base case generates a cumulative 5-year IRR of 22.4% [1][3].",
+      "latency_ms": 10101.8,
+      "status": "success",
+      "is_refusal": false,
+      "answered_with_citation": true,
+      "total_citations": 2,
+      "supported_citations": 2,
+      "citation_details": [
+        {
+          "id": 1,
+          "document": "mba_report.pdf",
+          "page_number": 1,
+          "has_anchor": true
+        },
+        {
+          "id": 3,
+          "document": "mba_report.pdf",
+          "page_number": 1,
+          "has_anchor": true
+        }
+      ],
+      "final_citations": [
+        {
+          "id": 1,
+          "document": "mba_report.pdf",
+          "chunk_index": 1,
+          "document_id": 7,
+          "page_number": 1,
+          "snippet": "the base case, the company requires a total capital investment of INR 410 crore, reaches city-level break-even in an average of 19 months, and generates a cumulative 5-year IRR of 22.4%. The recommend"
+        },
+        {
+          "id": 3,
+          "document": "mba_report.pdf",
+          "chunk_index": 0,
+          "document_id": 7,
+          "page_number": 1,
+          "snippet": "Synthetic document generated for RAG evaluation. All companies and figures are fictional. Page 1 Project Lotus: Entering the Tier-2 Quick-Commerce Market in India Strategic Expansion Analysis for Velo"
+        }
+      ]
+    },
+    {
+      "id": "mba-04",
+      "source": "mba-report",
+      "question": "Which four cities are recommended for the pilot phase?",
+      "answerable": true,
+      "raw_answer": "The four cities recommended for the pilot phase (Phase 1) are Indore, Jaipur, Lucknow, and Coimbatore [1].",
+      "clean_answer": "The four cities recommended for the pilot phase (Phase 1) are Indore, Jaipur, Lucknow, and Coimbatore.",
+      "latency_ms": 7367.0,
+      "status": "success",
+      "is_refusal": false,
+      "answered_with_citation": true,
+      "total_citations": 5,
+      "supported_citations": 1,
+      "citation_details": [
+        {
+          "id": 1,
+          "document": "mba_report.pdf",
+          "page_number": 1,
+          "has_anchor": true
+        },
+        {
+          "id": 2,
+          "document": "mba_report.pdf",
+          "page_number": 3,
+          "has_anchor": false
+        },
+        {
+          "id": 3,
+          "document": "mba_report.pdf",
+          "page_number": 4,
+          "has_anchor": false
+        },
+        {
+          "id": 4,
+          "document": "mba_report.pdf",
+          "page_number": 2,
+          "has_anchor": false
+        },
+        {
+          "id": 5,
+          "document": "mba_report.pdf",
+          "page_number": 3,
+          "has_anchor": false
+        }
+      ],
+      "final_citations": [
+        {
+          "id": 1,
+          "document": "mba_report.pdf",
+          "chunk_index": 1,
+          "document_id": 7,
+          "page_number": 1,
+          "snippet": "the base case, the company requires a total capital investment of INR 410 crore, reaches city-level break-even in an average of 19 months, and generates a cumulative 5-year IRR of 22.4%. The recommend"
+        },
+        {
+          "id": 2,
+          "document": "mba_report.pdf",
+          "chunk_index": 5,
+          "document_id": 7,
+          "page_number": 3,
+          "snippet": "Synthetic document generated for RAG evaluation. All companies and figures are fictional. Page 3 4. Operational Plan 4.1 Phased Rollout Phase 1 (months 1 to 12) covers four pilot cities with 8 dark st"
+        },
+        {
+          "id": 3,
+          "document": "mba_report.pdf",
+          "chunk_index": 8,
+          "document_id": 7,
+          "page_number": 4,
+          "snippet": "Synthetic document generated for RAG evaluation. All companies and figures are fictional. Page 4 7. Risk Assessment The three highest-rated risks are: (1) price war with national competitors, probabil"
+        },
+        {
+          "id": 4,
+          "document": "mba_report.pdf",
+          "chunk_index": 4,
+          "document_id": 7,
+          "page_number": 2,
+          "snippet": "3. Competitive Landscape Three national players (Zepto, Blinkit and Swiggy Instamart) currently operate in at least six of the twelve target cities. However, dark-store density remains low. In Indore,"
+        },
+        {
+          "id": 5,
+          "document": "mba_report.pdf",
+          "chunk_index": 6,
+          "document_id": 7,
+          "page_number": 3,
+          "snippet": "A new regional distribution centre (RDC) will be established in Nagpur to serve Indore, Nagpur, Raipur and Bhopal, with a capacity of 18,000 pallets. A second RDC in Jaipur will serve Rajasthan and Pu"
+        }
+      ]
+    },
+    {
+      "id": "mba-05",
+      "source": "mba-report",
+      "question": "Why is the smaller basket size in Tier-2 cities only partly a problem for profitability?",
+      "answerable": true,
+      "raw_answer": "The smaller basket size in Tier-2 cities is only partly a problem for profitability because the lower Average Order Value (AOV) is partially offset by significantly lower last-mile delivery costs per order [1]. Specifically, while the AOV in Tier-2 cities is 31% lower than in metros (INR 412 versus INR 598), the last-mile delivery cost per order is 38% lower (INR 29 versus INR 47) [1].",
+      "clean_answer": "The smaller basket size in Tier-2 cities is only partly a problem for profitability because the lower Average Order Value (AOV) is partially offset by significantly lower last-mile delivery costs per order [1]. Specifically, while the AOV in Tier-2 cities is 31% lower than in metros (INR 412 versus INR 598), the last-mile delivery cost per order is 38% lower (INR 29 versus INR 47) [1].",
+      "latency_ms": 6562.0,
+      "status": "success",
+      "is_refusal": false,
+      "answered_with_citation": true,
+      "total_citations": 1,
+      "supported_citations": 1,
+      "citation_details": [
+        {
+          "id": 1,
+          "document": "mba_report.pdf",
+          "page_number": 1,
+          "has_anchor": true
+        }
+      ],
+      "final_citations": [
+        {
+          "id": 1,
+          "document": "mba_report.pdf",
+          "chunk_index": 1,
+          "document_id": 7,
+          "page_number": 1,
+          "snippet": "the base case, the company requires a total capital investment of INR 410 crore, reaches city-level break-even in an average of 19 months, and generates a cumulative 5-year IRR of 22.4%. The recommend"
+        }
+      ]
+    },
+    {
+      "id": "mba-06",
+      "source": "mba-report",
+      "question": "How many dark stores per million people does Indore have compared with Bengaluru?",
+      "answerable": true,
+      "raw_answer": "Indore has a dark store density of 4.2 stores per million people, compared with 11.8 stores per million people in Bengaluru [1].",
+      "clean_answer": "Indore has a dark store density of 4.2 stores per million people, compared with 11.8 stores per million people in Bengaluru [1].",
+      "latency_ms": 5834.4,
+      "status": "success",
+      "is_refusal": false,
+      "answered_with_citation": true,
+      "total_citations": 1,
+      "supported_citations": 1,
+      "citation_details": [
+        {
+          "id": 1,
+          "document": "mba_report.pdf",
+          "page_number": 2,
+          "has_anchor": true
+        }
+      ],
+      "final_citations": [
+        {
+          "id": 1,
+          "document": "mba_report.pdf",
+          "chunk_index": 4,
+          "document_id": 7,
+          "page_number": 2,
+          "snippet": "3. Competitive Landscape Three national players (Zepto, Blinkit and Swiggy Instamart) currently operate in at least six of the twelve target cities. However, dark-store density remains low. In Indore,"
+        }
+      ]
+    },
+    {
+      "id": "mba-07",
+      "source": "mba-report",
+      "question": "What spoilage rate does Veloura achieve versus the industry average?",
+      "answerable": true,
+      "raw_answer": "Veloura achieves a spoilage rate of 2.1%, which is significantly lower than the industry average of 5.6% [1].",
+      "clean_answer": "Veloura achieves a spoilage rate of 2.1%, which is significantly lower than the industry average of 5.6% [1].",
+      "latency_ms": 6485.9,
+      "status": "success",
+      "is_refusal": false,
+      "answered_with_citation": true,
+      "total_citations": 1,
+      "supported_citations": 1,
+      "citation_details": [
+        {
+          "id": 1,
+          "document": "mba_report.pdf",
+          "page_number": 2,
+          "has_anchor": true
+        }
+      ],
+      "final_citations": [
+        {
+          "id": 1,
+          "document": "mba_report.pdf",
+          "chunk_index": 4,
+          "document_id": 7,
+          "page_number": 2,
+          "snippet": "3. Competitive Landscape Three national players (Zepto, Blinkit and Swiggy Instamart) currently operate in at least six of the twelve target cities. However, dark-store density remains low. In Indore,"
+        }
+      ]
+    },
+    {
+      "id": "mba-08",
+      "source": "mba-report",
+      "question": "How many Veloura Prime members are there?",
+      "answerable": true,
+      "raw_answer": "Veloura's 'Veloura Prime' loyalty programme has 640,000 active members [1][2].",
+      "clean_answer": "Veloura's 'Veloura Prime' loyalty programme has 640,000 active members [1][2].",
+      "latency_ms": 4968.5,
+      "status": "success",
+      "is_refusal": false,
+      "answered_with_citation": true,
+      "total_citations": 2,
+      "supported_citations": 1,
+      "citation_details": [
+        {
+          "id": 1,
+          "document": "mba_report.pdf",
+          "page_number": 2,
+          "has_anchor": true
+        },
+        {
+          "id": 2,
+          "document": "mba_report.pdf",
+          "page_number": 3,
+          "has_anchor": false
+        }
+      ],
+      "final_citations": [
+        {
+          "id": 1,
+          "document": "mba_report.pdf",
+          "chunk_index": 4,
+          "document_id": 7,
+          "page_number": 2,
+          "snippet": "3. Competitive Landscape Three national players (Zepto, Blinkit and Swiggy Instamart) currently operate in at least six of the twelve target cities. However, dark-store density remains low. In Indore,"
+        },
+        {
+          "id": 2,
+          "document": "mba_report.pdf",
+          "chunk_index": 7,
+          "document_id": 7,
+          "page_number": 3,
+          "snippet": "scenario (AOV 15% lower and CAC 25% higher) IRR falls to 11.8%, below the company's 15% hurdle rate. 6. SWOT Analysis Strengths Weaknesses Direct farmer sourcing; 2.1% spoilage Limited brand awareness"
+        }
+      ]
+    },
+    {
+      "id": "mba-09",
+      "source": "mba-report",
+      "question": "How many new dark stores will exist at the end of the programme?",
+      "answerable": true,
+      "raw_answer": "At the end of the programme, there will be 76 new dark stores [1].",
+      "clean_answer": "At the end of the programme, there will be 76 new dark stores [1].",
+      "latency_ms": 8587.4,
+      "status": "success",
+      "is_refusal": false,
+      "answered_with_citation": true,
+      "total_citations": 1,
+      "supported_citations": 1,
+      "citation_details": [
+        {
+          "id": 1,
+          "document": "mba_report.pdf",
+          "page_number": 3,
+          "has_anchor": true
+        }
+      ],
+      "final_citations": [
+        {
+          "id": 1,
+          "document": "mba_report.pdf",
+          "chunk_index": 5,
+          "document_id": 7,
+          "page_number": 3,
+          "snippet": "Synthetic document generated for RAG evaluation. All companies and figures are fictional. Page 3 4. Operational Plan 4.1 Phased Rollout Phase 1 (months 1 to 12) covers four pilot cities with 8 dark st"
+        }
+      ]
+    },
+    {
+      "id": "mba-10",
+      "source": "mba-report",
+      "question": "Where will the new regional distribution centre be established?",
+      "answerable": true,
+      "raw_answer": "The new regional distribution centre (RDC) will be established in Nagpur [1][2].",
+      "clean_answer": "The new regional distribution centre (RDC) will be established in Nagpur [1][2].",
+      "latency_ms": 14867.6,
+      "status": "success",
+      "is_refusal": false,
+      "answered_with_citation": true,
+      "total_citations": 2,
+      "supported_citations": 2,
+      "citation_details": [
+        {
+          "id": 1,
+          "document": "mba_report.pdf",
+          "page_number": 3,
+          "has_anchor": true
+        },
+        {
+          "id": 2,
+          "document": "mba_report.pdf",
+          "page_number": 3,
+          "has_anchor": true
+        }
+      ],
+      "final_citations": [
+        {
+          "id": 1,
+          "document": "mba_report.pdf",
+          "chunk_index": 6,
+          "document_id": 7,
+          "page_number": 3,
+          "snippet": "A new regional distribution centre (RDC) will be established in Nagpur to serve Indore, Nagpur, Raipur and Bhopal, with a capacity of 18,000 pallets. A second RDC in Jaipur will serve Rajasthan and Pu"
+        },
+        {
+          "id": 2,
+          "document": "mba_report.pdf",
+          "chunk_index": 5,
+          "document_id": 7,
+          "page_number": 3,
+          "snippet": "Synthetic document generated for RAG evaluation. All companies and figures are fictional. Page 3 4. Operational Plan 4.1 Phased Rollout Phase 1 (months 1 to 12) covers four pilot cities with 8 dark st"
+        }
+      ]
+    },
+    {
+      "id": "mba-11",
+      "source": "mba-report",
+      "question": "What is the EBITDA trajectory over the five years?",
+      "answerable": true,
+      "raw_answer": "The EBITDA trajectory over the five-year base-case projection is as follows [1]:\n\n*   **Year 1:** -INR 88 crore\n*   **Year 2:** -INR 61 crore\n*   **Year 3:** INR 14 crore\n*   **Year 4:** INR 132 crore\n*   **Year 5:** INR 241 crore\n\nThis indicates a transition from an EBITDA loss in the first two years to positive profitability starting in Year 3, with significant growth in profitability through Year 5 [1].",
+      "clean_answer": "The EBITDA trajectory over the five-year base-case projection is as follows [1]:\n\n* **Year 1:** -INR 88 crore\n* **Year 2:** -INR 61 crore\n* **Year 3:** INR 14 crore\n* **Year 4:** INR 132 crore\n* **Year 5:** INR 241 crore\n\nThis indicates a transition from an EBITDA loss in the first two years to positive profitability starting in Year 3, with significant growth in profitability through Year 5 [1].",
+      "latency_ms": 15888.7,
+      "status": "success",
+      "is_refusal": false,
+      "answered_with_citation": true,
+      "total_citations": 1,
+      "supported_citations": 1,
+      "citation_details": [
+        {
+          "id": 1,
+          "document": "mba_report.pdf",
+          "page_number": 3,
+          "has_anchor": true
+        }
+      ],
+      "final_citations": [
+        {
+          "id": 1,
+          "document": "mba_report.pdf",
+          "chunk_index": 6,
+          "document_id": 7,
+          "page_number": 3,
+          "snippet": "A new regional distribution centre (RDC) will be established in Nagpur to serve Indore, Nagpur, Raipur and Bhopal, with a capacity of 18,000 pallets. A second RDC in Jaipur will serve Rajasthan and Pu"
+        }
+      ]
+    },
+    {
+      "id": "mba-12",
+      "source": "mba-report",
+      "question": "What is the net present value at the 12% discount rate?",
+      "answerable": true,
+      "raw_answer": "The net present value (NPV) at a 12% discount rate is INR 186 crore [2].",
+      "clean_answer": "The net present value (NPV) at a 12% discount rate is INR 186 crore [2].",
+      "latency_ms": 12784.0,
+      "status": "success",
+      "is_refusal": false,
+      "answered_with_citation": true,
+      "total_citations": 1,
+      "supported_citations": 1,
+      "citation_details": [
+        {
+          "id": 2,
+          "document": "mba_report.pdf",
+          "page_number": 3,
+          "has_anchor": true
+        }
+      ],
+      "final_citations": [
+        {
+          "id": 2,
+          "document": "mba_report.pdf",
+          "chunk_index": 6,
+          "document_id": 7,
+          "page_number": 3,
+          "snippet": "A new regional distribution centre (RDC) will be established in Nagpur to serve Indore, Nagpur, Raipur and Bhopal, with a capacity of 18,000 pallets. A second RDC in Jaipur will serve Rajasthan and Pu"
+        }
+      ]
+    },
+    {
+      "id": "mba-13",
+      "source": "mba-report",
+      "question": "What happens to the IRR in the downside scenario?",
+      "answerable": true,
+      "raw_answer": "In the downside scenario, characterized by an average order value (AOV) 15% lower and customer acquisition cost (CAC) 25% higher, the Internal Rate of Return (IRR) falls to 11.8% [1][3]. This figure is below the company's 15% hurdle rate [3].",
+      "clean_answer": "In the downside scenario, characterized by an average order value (AOV) 15% lower and customer acquisition cost (CAC) 25% higher, the Internal Rate of Return (IRR) falls to 11.8% [1][3]. This figure is below the company's 15% hurdle rate [3].",
+      "latency_ms": 13173.8,
+      "status": "success",
+      "is_refusal": false,
+      "answered_with_citation": true,
+      "total_citations": 2,
+      "supported_citations": 2,
+      "citation_details": [
+        {
+          "id": 1,
+          "document": "mba_report.pdf",
+          "page_number": 3,
+          "has_anchor": true
+        },
+        {
+          "id": 3,
+          "document": "mba_report.pdf",
+          "page_number": 3,
+          "has_anchor": true
+        }
+      ],
+      "final_citations": [
+        {
+          "id": 1,
+          "document": "mba_report.pdf",
+          "chunk_index": 7,
+          "document_id": 7,
+          "page_number": 3,
+          "snippet": "scenario (AOV 15% lower and CAC 25% higher) IRR falls to 11.8%, below the company's 15% hurdle rate. 6. SWOT Analysis Strengths Weaknesses Direct farmer sourcing; 2.1% spoilage Limited brand awareness"
+        },
+        {
+          "id": 3,
+          "document": "mba_report.pdf",
+          "chunk_index": 6,
+          "document_id": 7,
+          "page_number": 3,
+          "snippet": "A new regional distribution centre (RDC) will be established in Nagpur to serve Indore, Nagpur, Raipur and Bhopal, with a capacity of 18,000 pallets. A second RDC in Jaipur will serve Rajasthan and Pu"
+        }
+      ]
+    },
+    {
+      "id": "mba-14",
+      "source": "mba-report",
+      "question": "What rider attrition did the Indore pilot data show?",
+      "answerable": true,
+      "raw_answer": "The Indore pilot data showed a rider attrition rate of 14% per month [1].",
+      "clean_answer": "The Indore pilot data showed a rider attrition rate of 14% per month [1].",
+      "latency_ms": 12516.3,
+      "status": "success",
+      "is_refusal": false,
+      "answered_with_citation": true,
+      "total_citations": 1,
+      "supported_citations": 1,
+      "citation_details": [
+        {
+          "id": 1,
+          "document": "mba_report.pdf",
+          "page_number": 4,
+          "has_anchor": true
+        }
+      ],
+      "final_citations": [
+        {
+          "id": 1,
+          "document": "mba_report.pdf",
+          "chunk_index": 8,
+          "document_id": 7,
+          "page_number": 4,
+          "snippet": "Synthetic document generated for RAG evaluation. All companies and figures are fictional. Page 4 7. Risk Assessment The three highest-rated risks are: (1) price war with national competitors, probabil"
+        }
+      ]
+    },
+    {
+      "id": "mba-15",
+      "source": "mba-report",
+      "question": "What conditions must pilot stores meet before Phase 2 proceeds?",
+      "answerable": true,
+      "raw_answer": "Pilot stores must achieve a minimum of 18,000 orders per store per month and a rider attrition rate below 10% for Phase 2 to proceed [1].",
+      "clean_answer": "Pilot stores must achieve a minimum of 18,000 orders per store per month and a rider attrition rate below 10% for Phase 2 to proceed [1].",
+      "latency_ms": 15842.3,
+      "status": "success",
+      "is_refusal": false,
+      "answered_with_citation": true,
+      "total_citations": 1,
+      "supported_citations": 1,
+      "citation_details": [
+        {
+          "id": 1,
+          "document": "mba_report.pdf",
+          "page_number": 4,
+          "has_anchor": true
+        }
+      ],
+      "final_citations": [
+        {
+          "id": 1,
+          "document": "mba_report.pdf",
+          "chunk_index": 8,
+          "document_id": 7,
+          "page_number": 4,
+          "snippet": "Synthetic document generated for RAG evaluation. All companies and figures are fictional. Page 4 7. Risk Assessment The three highest-rated risks are: (1) price war with national competitors, probabil"
+        }
+      ]
+    },
+    {
+      "id": "web-01",
+      "source": "sparseroute-paper",
+      "question": "How many parameters does the router network have?",
+      "answerable": true,
+      "raw_answer": "The router network has 85 million parameters [1][2].",
+      "clean_answer": "The router network has 85 million parameters [1][2].",
+      "latency_ms": 9499.3,
+      "status": "success",
+      "is_refusal": false,
+      "answered_with_citation": true,
+      "total_citations": 2,
+      "supported_citations": 2,
+      "citation_details": [
+        {
+          "id": 1,
+          "document": "google_paper.pdf",
+          "page_number": 2,
+          "has_anchor": true
+        },
+        {
+          "id": 2,
+          "document": "google_paper.pdf",
+          "page_number": 1,
+          "has_anchor": true
+        }
+      ],
+      "final_citations": [
+        {
+          "id": 1,
+          "document": "google_paper.pdf",
+          "chunk_index": 4,
+          "document_id": 8,
+          "page_number": 2,
+          "snippet": "Synthetic document generated for RAG evaluation. Authors, results and figures are fictional. Page 2 network scores every node of the hierarchy given the query embedding. In the assembly stage, nodes a"
+        },
+        {
+          "id": 2,
+          "document": "google_paper.pdf",
+          "chunk_index": 0,
+          "document_id": 8,
+          "page_number": 1,
+          "snippet": "Synthetic document generated for RAG evaluation. Authors, results and figures are fictional. Page 1 SparseRoute: Adaptive Sparse Retrieval for Long-Context Question Answering Maya R. Lindqvist, Arjun "
+        }
+      ]
+    },
+    {
+      "id": "web-02",
+      "source": "sparseroute-paper",
+      "question": "What exact-match score does SparseRoute achieve on LongQA-Bench?",
+      "answerable": true,
+      "raw_answer": "SparseRoute achieves an exact-match score of 68.4 on the LongQA-Bench benchmark [1][2][3][4].",
+      "clean_answer": "SparseRoute achieves an exact-match score of 68.4 on the LongQA-Bench benchmark [1][2][3][4].",
+      "latency_ms": 12246.5,
+      "status": "success",
+      "is_refusal": false,
+      "answered_with_citation": true,
+      "total_citations": 4,
+      "supported_citations": 2,
+      "citation_details": [
+        {
+          "id": 1,
+          "document": "google_paper.pdf",
+          "page_number": 1,
+          "has_anchor": true
+        },
+        {
+          "id": 2,
+          "document": "google_paper.pdf",
+          "page_number": 1,
+          "has_anchor": true
+        },
+        {
+          "id": 3,
+          "document": "google_paper.pdf",
+          "page_number": 3,
+          "has_anchor": false
+        },
+        {
+          "id": 4,
+          "document": "google_paper.pdf",
+          "page_number": 4,
+          "has_anchor": false
+        }
+      ],
+      "final_citations": [
+        {
+          "id": 1,
+          "document": "google_paper.pdf",
+          "chunk_index": 1,
+          "document_id": 8,
+          "page_number": 1,
+          "snippet": "importance score and a granularity level (sentence, paragraph or section). On the LongQA-Bench benchmark, SparseRoute achieves an exact-match score of 68.4, outperforming the strongest dense-retrieval"
+        },
+        {
+          "id": 2,
+          "document": "google_paper.pdf",
+          "chunk_index": 0,
+          "document_id": 8,
+          "page_number": 1,
+          "snippet": "Synthetic document generated for RAG evaluation. Authors, results and figures are fictional. Page 1 SparseRoute: Adaptive Sparse Retrieval for Long-Context Question Answering Maya R. Lindqvist, Arjun "
+        },
+        {
+          "id": 3,
+          "document": "google_paper.pdf",
+          "chunk_index": 7,
+          "document_id": 8,
+          "page_number": 3,
+          "snippet": "retrieved tokens per query. 5. Results Method EM F1 Avg. Retrieved Tokens DenseFlat 60.5 68.2 2,560 HybridBM25 62.3 70.1 2,560 TreeWalk 63.8 71.4 2,980 FullContext 58.9 66.7 74,000 SparseRoute (ours) "
+        },
+        {
+          "id": 4,
+          "document": "google_paper.pdf",
+          "chunk_index": 10,
+          "document_id": 8,
+          "page_number": 4,
+          "snippet": "unreliable for documents without clear structure, such as chat transcripts. Finally, the 2.1 million synthetic training pairs were generated by an LLM and may contain systematic biases. 8. Conclusion "
+        }
+      ]
+    },
+    {
+      "id": "web-03",
+      "source": "sparseroute-paper",
+      "question": "By how much does SparseRoute reduce the number of retrieved tokens?",
+      "answerable": true,
+      "raw_answer": "SparseRoute reduces the number of retrieved tokens by 41% [1][2]. Specifically, it retrieves an average of 1,510 tokens compared to 2,560 tokens for the DenseFlat baseline [3].",
+      "clean_answer": "SparseRoute reduces the number of retrieved tokens by 41% [1][2]. Specifically, it retrieves an average of 1,510 tokens compared to 2,560 tokens for the DenseFlat baseline [3].",
+      "latency_ms": 11461.8,
+      "status": "success",
+      "is_refusal": false,
+      "answered_with_citation": true,
+      "total_citations": 3,
+      "supported_citations": 1,
+      "citation_details": [
+        {
+          "id": 1,
+          "document": "google_paper.pdf",
+          "page_number": 1,
+          "has_anchor": true
+        },
+        {
+          "id": 2,
+          "document": "google_paper.pdf",
+          "page_number": 4,
+          "has_anchor": false
+        },
+        {
+          "id": 3,
+          "document": "google_paper.pdf",
+          "page_number": 3,
+          "has_anchor": false
+        }
+      ],
+      "final_citations": [
+        {
+          "id": 1,
+          "document": "google_paper.pdf",
+          "chunk_index": 1,
+          "document_id": 8,
+          "page_number": 1,
+          "snippet": "importance score and a granularity level (sentence, paragraph or section). On the LongQA-Bench benchmark, SparseRoute achieves an exact-match score of 68.4, outperforming the strongest dense-retrieval"
+        },
+        {
+          "id": 2,
+          "document": "google_paper.pdf",
+          "chunk_index": 10,
+          "document_id": 8,
+          "page_number": 4,
+          "snippet": "unreliable for documents without clear structure, such as chat transcripts. Finally, the 2.1 million synthetic training pairs were generated by an LLM and may contain systematic biases. 8. Conclusion "
+        },
+        {
+          "id": 3,
+          "document": "google_paper.pdf",
+          "chunk_index": 7,
+          "document_id": 8,
+          "page_number": 3,
+          "snippet": "retrieved tokens per query. 5. Results Method EM F1 Avg. Retrieved Tokens DenseFlat 60.5 68.2 2,560 HybridBM25 62.3 70.1 2,560 TreeWalk 63.8 71.4 2,980 FullContext 58.9 66.7 74,000 SparseRoute (ours) "
+        }
+      ]
+    },
+    {
+      "id": "web-04",
+      "source": "sparseroute-paper",
+      "question": "What is the default token budget used during assembly?",
+      "answerable": true,
+      "raw_answer": "The default token budget used during assembly is 2,048 tokens [1].",
+      "clean_answer": "The default token budget used during assembly is 2,048 tokens [1].",
+      "latency_ms": 11572.7,
+      "status": "success",
+      "is_refusal": false,
+      "answered_with_citation": true,
+      "total_citations": 1,
+      "supported_citations": 1,
+      "citation_details": [
+        {
+          "id": 1,
+          "document": "google_paper.pdf",
+          "page_number": 2,
+          "has_anchor": true
+        }
+      ],
+      "final_citations": [
+        {
+          "id": 1,
+          "document": "google_paper.pdf",
+          "chunk_index": 4,
+          "document_id": 8,
+          "page_number": 2,
+          "snippet": "Synthetic document generated for RAG evaluation. Authors, results and figures are fictional. Page 2 network scores every node of the hierarchy given the query embedding. In the assembly stage, nodes a"
+        }
+      ]
+    },
+    {
+      "id": "web-05",
+      "source": "sparseroute-paper",
+      "question": "What weight is given to the redundancy term in the Budgeted Contrastive Loss?",
+      "answerable": true,
+      "raw_answer": "The weight given to the redundancy term (λ) in the Budgeted Contrastive Loss is 0.15 [1][4].",
+      "clean_answer": "The weight given to the redundancy term (λ) in the Budgeted Contrastive Loss is 0.15 [1].",
+      "latency_ms": 11468.4,
+      "status": "success",
+      "is_refusal": false,
+      "answered_with_citation": true,
+      "total_citations": 1,
+      "supported_citations": 1,
+      "citation_details": [
+        {
+          "id": 1,
+          "document": "google_paper.pdf",
+          "page_number": 2,
+          "has_anchor": true
+        }
+      ],
+      "final_citations": [
+        {
+          "id": 1,
+          "document": "google_paper.pdf",
+          "chunk_index": 5,
+          "document_id": 8,
+          "page_number": 2,
+          "snippet": "query-document pairs using the AdamW optimiser with a learning rate of 3e-5. 3.3 Budgeted Contrastive Loss BCL extends the standard InfoNCE loss with a term λ · R(S), where R(S) measures the pairwise "
+        }
+      ]
+    },
+    {
+      "id": "web-06",
+      "source": "sparseroute-paper",
+      "question": "What learning rate was the router trained with?",
+      "answerable": true,
+      "raw_answer": "The router was trained with a learning rate of 3e-5. [1][3]",
+      "clean_answer": "The router was trained with a learning rate of 3e-5. [1][3]",
+      "latency_ms": 10234.9,
+      "status": "success",
+      "is_refusal": false,
+      "answered_with_citation": true,
+      "total_citations": 2,
+      "supported_citations": 2,
+      "citation_details": [
+        {
+          "id": 1,
+          "document": "google_paper.pdf",
+          "page_number": 2,
+          "has_anchor": true
+        },
+        {
+          "id": 3,
+          "document": "google_paper.pdf",
+          "page_number": 2,
+          "has_anchor": true
+        }
+      ],
+      "final_citations": [
+        {
+          "id": 1,
+          "document": "google_paper.pdf",
+          "chunk_index": 4,
+          "document_id": 8,
+          "page_number": 2,
+          "snippet": "Synthetic document generated for RAG evaluation. Authors, results and figures are fictional. Page 2 network scores every node of the hierarchy given the query embedding. In the assembly stage, nodes a"
+        },
+        {
+          "id": 3,
+          "document": "google_paper.pdf",
+          "chunk_index": 5,
+          "document_id": 8,
+          "page_number": 2,
+          "snippet": "query-document pairs using the AdamW optimiser with a learning rate of 3e-5. 3.3 Budgeted Contrastive Loss BCL extends the standard InfoNCE loss with a term λ · R(S), where R(S) measures the pairwise "
+        }
+      ]
+    },
+    {
+      "id": "web-07",
+      "source": "sparseroute-paper",
+      "question": "How many questions does LongQA-Bench contain and how are they split by hop count?",
+      "answerable": true,
+      "raw_answer": "LongQA-Bench contains 12,500 questions [1][4]. These questions are split by hop count as follows: 40% are single-hop, 35% are two-hop, and 25% are three-hop or more [1].",
+      "clean_answer": "LongQA-Bench contains 12,500 questions [1][4]. These questions are split by hop count as follows: 40% are single-hop, 35% are two-hop, and 25% are three-hop or more [1].",
+      "latency_ms": 14866.5,
+      "status": "success",
+      "is_refusal": false,
+      "answered_with_citation": true,
+      "total_citations": 2,
+      "supported_citations": 1,
+      "citation_details": [
+        {
+          "id": 1,
+          "document": "google_paper.pdf",
+          "page_number": 3,
+          "has_anchor": true
+        },
+        {
+          "id": 4,
+          "document": "google_paper.pdf",
+          "page_number": 1,
+          "has_anchor": false
+        }
+      ],
+      "final_citations": [
+        {
+          "id": 1,
+          "document": "google_paper.pdf",
+          "chunk_index": 6,
+          "document_id": 8,
+          "page_number": 3,
+          "snippet": "Synthetic document generated for RAG evaluation. Authors, results and figures are fictional. Page 3 4. Experimental Setup Datasets. We evaluate on LongQA-Bench (ours), NaturalQuestions-Long, and Hotpo"
+        },
+        {
+          "id": 4,
+          "document": "google_paper.pdf",
+          "chunk_index": 2,
+          "document_id": 8,
+          "page_number": 1,
+          "snippet": "a fixed value of k wastes context on simple queries and under-serves complex multi-hop queries. We make three contributions. (1) We introduce a query-adaptive router that selects retrieval granularity"
+        }
+      ]
+    },
+    {
+      "id": "web-08",
+      "source": "sparseroute-paper",
+      "question": "Why is simply using a bigger context window not enough for long documents?",
+      "answerable": true,
+      "raw_answer": "Simply expanding the context window is not sufficient for long documents because accuracy degrades for evidence located in the middle of contexts exceeding 64,000 tokens, a phenomenon consistent with \"lost in the middle\" [2][4]. Furthermore, experimental results show that the \"FullContext\" method, which uses a large token budget of 74,000, underperforms all other retrieval methods with an Exact Match (EM) score of 58.9, confirming that merely increasing context size does not guarantee better performance [1].",
+      "clean_answer": "Simply expanding the context window is not sufficient for long documents because accuracy degrades for evidence located in the middle of contexts exceeding 64,000 tokens, a phenomenon consistent with \"lost in the middle\" [2]. Furthermore, experimental results show that the \"FullContext\" method, which uses a large token budget of 74,000, underperforms all other retrieval methods with an Exact Match (EM) score of 58.9, confirming that merely increasing context size does not guarantee better performance [1].",
+      "latency_ms": 12372.6,
+      "status": "success",
+      "is_refusal": false,
+      "answered_with_citation": true,
+      "total_citations": 2,
+      "supported_citations": 1,
+      "citation_details": [
+        {
+          "id": 2,
+          "document": "google_paper.pdf",
+          "page_number": 1,
+          "has_anchor": false
+        },
+        {
+          "id": 1,
+          "document": "google_paper.pdf",
+          "page_number": 3,
+          "has_anchor": true
+        }
+      ],
+      "final_citations": [
+        {
+          "id": 2,
+          "document": "google_paper.pdf",
+          "chunk_index": 3,
+          "document_id": 8,
+          "page_number": 1,
+          "snippet": "typically use fixed rules for traversal. Long-context LLMs reduce the need for retrieval, but our experiments show that accuracy degrades for evidence located in the middle of contexts exceeding 64,00"
+        },
+        {
+          "id": 1,
+          "document": "google_paper.pdf",
+          "chunk_index": 7,
+          "document_id": 8,
+          "page_number": 3,
+          "snippet": "retrieved tokens per query. 5. Results Method EM F1 Avg. Retrieved Tokens DenseFlat 60.5 68.2 2,560 HybridBM25 62.3 70.1 2,560 TreeWalk 63.8 71.4 2,980 FullContext 58.9 66.7 74,000 SparseRoute (ours) "
+        }
+      ]
+    },
+    {
+      "id": "web-09",
+      "source": "sparseroute-paper",
+      "question": "How much does SparseRoute improve over DenseFlat on questions needing three or more hops?",
+      "answerable": true,
+      "raw_answer": "SparseRoute improves exact match by 13.6 points over DenseFlat on questions requiring three or more hops [1]. This gain is attributed to the router's ability to allocate more of the budget to multiple distinct evidence regions [1][4].",
+      "clean_answer": "SparseRoute improves exact match by 13.6 points over DenseFlat on questions requiring three or more hops [1]. This gain is attributed to the router's ability to allocate more of the budget to multiple distinct evidence regions [1][4].",
+      "latency_ms": 12592.9,
+      "status": "success",
+      "is_refusal": false,
+      "answered_with_citation": true,
+      "total_citations": 2,
+      "supported_citations": 1,
+      "citation_details": [
+        {
+          "id": 1,
+          "document": "google_paper.pdf",
+          "page_number": 3,
+          "has_anchor": true
+        },
+        {
+          "id": 4,
+          "document": "google_paper.pdf",
+          "page_number": 3,
+          "has_anchor": false
+        }
+      ],
+      "final_citations": [
+        {
+          "id": 1,
+          "document": "google_paper.pdf",
+          "chunk_index": 7,
+          "document_id": 8,
+          "page_number": 3,
+          "snippet": "retrieved tokens per query. 5. Results Method EM F1 Avg. Retrieved Tokens DenseFlat 60.5 68.2 2,560 HybridBM25 62.3 70.1 2,560 TreeWalk 63.8 71.4 2,980 FullContext 58.9 66.7 74,000 SparseRoute (ours) "
+        },
+        {
+          "id": 4,
+          "document": "google_paper.pdf",
+          "chunk_index": 8,
+          "document_id": 8,
+          "page_number": 3,
+          "snippet": "we attribute to the router's ability to allocate more of the budget to multiple distinct evidence regions. 5.2 Latency On documents longer than 100,000 tokens, SparseRoute achieves a median end-to-end"
+        }
+      ]
+    },
+    {
+      "id": "web-10",
+      "source": "sparseroute-paper",
+      "question": "How much latency overhead does the router add per query?",
+      "answerable": true,
+      "raw_answer": "The router adds 38 milliseconds of overhead per query [1].",
+      "clean_answer": "The router adds 38 milliseconds of overhead per query [1].",
+      "latency_ms": 12670.9,
+      "status": "success",
+      "is_refusal": false,
+      "answered_with_citation": true,
+      "total_citations": 1,
+      "supported_citations": 1,
+      "citation_details": [
+        {
+          "id": 1,
+          "document": "google_paper.pdf",
+          "page_number": 3,
+          "has_anchor": true
+        }
+      ],
+      "final_citations": [
+        {
+          "id": 1,
+          "document": "google_paper.pdf",
+          "chunk_index": 8,
+          "document_id": 8,
+          "page_number": 3,
+          "snippet": "we attribute to the router's ability to allocate more of the budget to multiple distinct evidence regions. 5.2 Latency On documents longer than 100,000 tokens, SparseRoute achieves a median end-to-end"
+        }
+      ]
+    },
+    {
+      "id": "web-11",
+      "source": "sparseroute-paper",
+      "question": "Which component's removal caused the largest drop in the ablation study?",
+      "answerable": true,
+      "raw_answer": "Removing the granularity head caused the largest drop in the ablation study, resulting in a 3.5-point decrease [1].",
+      "clean_answer": "Removing the granularity head caused the largest drop in the ablation study, resulting in a 3.5-point decrease [1].",
+      "latency_ms": 11597.2,
+      "status": "success",
+      "is_refusal": false,
+      "answered_with_citation": true,
+      "total_citations": 1,
+      "supported_citations": 1,
+      "citation_details": [
+        {
+          "id": 1,
+          "document": "google_paper.pdf",
+          "page_number": 4,
+          "has_anchor": true
+        }
+      ],
+      "final_citations": [
+        {
+          "id": 1,
+          "document": "google_paper.pdf",
+          "chunk_index": 9,
+          "document_id": 8,
+          "page_number": 4,
+          "snippet": "Synthetic document generated for RAG evaluation. Authors, results and figures are fictional. Page 4 6. Ablation Study Variant EM Full SparseRoute 68.4 w/o Budgeted Contrastive Loss 66.3 w/o granularit"
+        }
+      ]
+    },
+    {
+      "id": "web-12",
+      "source": "sparseroute-paper",
+      "question": "What gain comes from raising the budget from 2,048 to 4,096 tokens?",
+      "answerable": true,
+      "raw_answer": "Raising the budget from 2,048 to 4,096 tokens yields a 0.5-point gain [1].",
+      "clean_answer": "Raising the budget from 2,048 to 4,096 tokens yields a 0.5-point gain [1].",
+      "latency_ms": 12500.8,
+      "status": "success",
+      "is_refusal": false,
+      "answered_with_citation": true,
+      "total_citations": 1,
+      "supported_citations": 1,
+      "citation_details": [
+        {
+          "id": 1,
+          "document": "google_paper.pdf",
+          "page_number": 4,
+          "has_anchor": true
+        }
+      ],
+      "final_citations": [
+        {
+          "id": 1,
+          "document": "google_paper.pdf",
+          "chunk_index": 9,
+          "document_id": 8,
+          "page_number": 4,
+          "snippet": "Synthetic document generated for RAG evaluation. Authors, results and figures are fictional. Page 4 6. Ablation Study Variant EM Full SparseRoute 68.4 w/o Budgeted Contrastive Loss 66.3 w/o granularit"
+        }
+      ]
+    },
+    {
+      "id": "web-13",
+      "source": "sparseroute-paper",
+      "question": "What are the stated limitations regarding language coverage?",
+      "answerable": true,
+      "raw_answer": "The stated limitation regarding language coverage is that SparseRoute was trained primarily on English-language documents and has not been evaluated on multilingual corpora [1].",
+      "clean_answer": "The stated limitation regarding language coverage is that SparseRoute was trained primarily on English-language documents and has not been evaluated on multilingual corpora [1].",
+      "latency_ms": 10437.1,
+      "status": "success",
+      "is_refusal": false,
+      "answered_with_citation": true,
+      "total_citations": 1,
+      "supported_citations": 1,
+      "citation_details": [
+        {
+          "id": 1,
+          "document": "google_paper.pdf",
+          "page_number": 4,
+          "has_anchor": true
+        }
+      ],
+      "final_citations": [
+        {
+          "id": 1,
+          "document": "google_paper.pdf",
+          "chunk_index": 9,
+          "document_id": 8,
+          "page_number": 4,
+          "snippet": "Synthetic document generated for RAG evaluation. Authors, results and figures are fictional. Page 4 6. Ablation Study Variant EM Full SparseRoute 68.4 w/o Budgeted Contrastive Loss 66.3 w/o granularit"
+        }
+      ]
+    },
+    {
+      "id": "none-01",
+      "source": "unanswerable",
+      "question": "What was Veloura Retail's revenue in FY2026?",
+      "answerable": false,
+      "raw_answer": "I could not find this in the provided documents. Say so plainly and cite nothing.",
+      "clean_answer": "I could not find this in the provided documents. Say so plainly and cite nothing.",
+      "latency_ms": 15130.4,
+      "status": "success",
+      "is_not_found": true,
+      "final_citations": []
+    },
+    {
+      "id": "none-02",
+      "source": "unanswerable",
+      "question": "What is the refund policy for unused tuition fees?",
+      "answerable": false,
+      "raw_answer": "I could not find this in the provided documents.",
+      "clean_answer": "I could not find this in the provided documents.",
+      "latency_ms": 7339.4,
+      "status": "success",
+      "is_not_found": true,
+      "final_citations": []
+    },
+    {
+      "id": "none-03",
+      "source": "unanswerable",
+      "question": "Which GPU was used to train the SparseRoute router?",
+      "answerable": false,
+      "raw_answer": "I could not find this in the provided documents.",
+      "clean_answer": "I could not find this in the provided documents.",
+      "latency_ms": 10234.1,
+      "status": "success",
+      "is_not_found": true,
+      "final_citations": []
+    }
+  ]
+}
