@@ -13,3 +13,7 @@ logs/
 *.zip
 __pycache__/
 backend/eval/.embed_cache.json
+.DS_Store
+app.db
+backend/eval/.cache/
+eval/

@@ -1,3 +1,0 @@
-label,org_id,total_queries,hit_at_1,hit_at_3,hit_at_5,mrr,page_match,dup_rate
-baseline,1,8,0.875,1.0,1.0,0.9375,0.0,0.0
-stage3-candidates,1,8,0.875,1.0,1.0,0.9375,0.0,0.0
