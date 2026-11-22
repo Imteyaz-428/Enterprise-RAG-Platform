@@ -8,6 +8,7 @@ function DocumentTable({
   totalPages,
   setCurrentPage,
   onDelete,
+  canDelete = false,
 }) {
   if (totalDocuments === 0) {
     return <EmptyState />;
@@ -43,6 +44,7 @@ function DocumentTable({
             key={document.id}
             document={document}
             onDelete={onDelete}
+            canDelete={canDelete}
           />
         ))}
 

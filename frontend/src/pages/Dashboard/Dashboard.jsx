@@ -12,6 +12,7 @@ import RecentDocuments from "../../components/dashboard/RecentDocuments";
 import OrganizationCard from "../../components/dashboard/OrganizationCard";
 
 import { getDashboardData } from "../../services/dashboard";
+import { hasRole } from "../../utils/roles";
 
 function Dashboard() {
   const [data, setData] = useState({
@@ -24,19 +25,25 @@ function Dashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadDashboard();
+    let mounted = true;
+    (async () => {
+      try {
+        const res = await getDashboardData();
+        if (mounted) {
+          setData(res);
+        }
+      } catch (err) {
+        console.error("Dashboard data load error:", err);
+      } finally {
+        if (mounted) {
+          setLoading(false);
+        }
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
   }, []);
-
-  const loadDashboard = async () => {
-    try {
-      const res = await getDashboardData();
-      setData(res);
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const recentDocuments = useMemo(() => {
     return [...data.documents]
@@ -60,7 +67,7 @@ function Dashboard() {
     );
   }
 
-  const isAdmin = data.currentUser?.role === "admin";
+  const isAdmin = hasRole(data.currentUser, "admin");
 
   return (
     <Layout>
@@ -104,20 +111,19 @@ function Dashboard() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
-
         <div className="lg:col-span-7">
-        <RecentDocuments
+          <RecentDocuments
             documents={recentDocuments}
-        />
+          />
         </div>
 
         <div className="lg:col-span-5">
-        <QuickActions
+          <QuickActions
+            currentUser={data.currentUser}
             isAdmin={isAdmin}
-        />
+          />
         </div>
-
-        </div>
+      </div>
 
       <OrganizationCard
         user={data.currentUser}

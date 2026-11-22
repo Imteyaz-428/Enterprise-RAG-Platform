@@ -5,6 +5,7 @@ import {
   X,
   Loader2,
 } from "lucide-react";
+import toast from "react-hot-toast";
 
 import { uploadDocument } from "../../services/document";
 
@@ -12,6 +13,8 @@ function UploadCard() {
   const [files, setFiles] = useState([]);
   const [dragging, setDragging] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [currentFileIndex, setCurrentFileIndex] = useState(0);
 
   const inputRef = useRef(null);
 
@@ -45,17 +48,20 @@ function UploadCard() {
     try {
       setLoading(true);
 
-      for (const file of files) {
-        await uploadDocument(file);
+      for (let i = 0; i < files.length; i++) {
+        setCurrentFileIndex(i);
+        setProgress(0);
+        await uploadDocument(files[i], (percent) => {
+          setProgress(percent);
+        });
       }
 
-      alert("Documents uploaded successfully.");
-
+      toast.success("Documents uploaded successfully.");
       setFiles([]);
+      setProgress(0);
     } catch (err) {
       console.error(err);
-
-      alert(
+      toast.error(
         err.response?.data?.detail ||
           "Failed to upload documents."
       );
@@ -165,6 +171,23 @@ function UploadCard() {
             ))}
           </div>
 
+          {loading && (
+            <div className="px-6 py-4 bg-gray-50 border-t">
+              <div className="flex justify-between text-xs text-gray-600 font-medium mb-1.5">
+                <span>
+                  Uploading ({currentFileIndex + 1}/{files.length}): {files[currentFileIndex]?.name}
+                </span>
+                <span>{progress}%</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+                <div
+                  className="bg-blue-600 h-2.5 rounded-full transition-all duration-200"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+            </div>
+          )}
+
           <div className="flex justify-end border-t px-6 py-5">
             <button
               type="button"
@@ -180,7 +203,7 @@ function UploadCard() {
               )}
 
               {loading
-                ? "Uploading..."
+                ? `Uploading (${progress}%)...`
                 : "Upload Documents"}
             </button>
           </div>

@@ -11,7 +11,8 @@ import {
   X,
 } from "lucide-react";
 
-import { removeToken } from "../../utils/token";
+import { clearTokens } from "../../utils/token";
+import { hasRole } from "../../utils/roles";
 
 function Sidebar({
   currentUser,
@@ -19,7 +20,7 @@ function Sidebar({
   setSidebarOpen,
 }) {
   const logout = () => {
-    removeToken();
+    clearTokens();
     window.location.href = "/";
   };
 
@@ -33,11 +34,17 @@ function Sidebar({
       path: "/dashboard",
       icon: LayoutDashboard,
     },
-    {
+  ];
+
+  if (hasRole(currentUser, "manager")) {
+    menu.push({
       name: "Upload",
       path: "/upload",
       icon: Upload,
-    },
+    });
+  }
+
+  menu.push(
     {
       name: "Documents",
       path: "/documents",
@@ -52,10 +59,10 @@ function Sidebar({
       name: "Settings",
       path: "/settings",
       icon: Settings,
-    },
-  ];
+    }
+  );
 
-  if (currentUser?.role === "admin") {
+  if (hasRole(currentUser, "admin")) {
     menu.push({
       name: "Team",
       path: "/users",
@@ -168,11 +175,11 @@ function Sidebar({
             <div>
 
               <p className="font-medium text-gray-900">
-                {currentUser?.username}
+                {currentUser?.name || "User"}
               </p>
 
               <p className="text-sm text-gray-500 capitalize">
-                {currentUser?.role}
+                {currentUser?.role || ""}
               </p>
 
             </div>

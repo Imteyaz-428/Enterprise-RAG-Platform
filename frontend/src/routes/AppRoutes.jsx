@@ -30,7 +30,7 @@ function AppRoutes() {
       <Route
         path="/upload"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute minRole="manager">
             <Upload />
           </ProtectedRoute>
         }
@@ -54,7 +54,7 @@ function AppRoutes() {
       <Route
         path="/users"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute minRole="admin">
             <Users />
           </ProtectedRoute>
         }

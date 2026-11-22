@@ -5,9 +5,13 @@ import {
   Users,
   ChevronRight,
 } from "lucide-react";
+import { hasRole } from "../../utils/roles";
 
-function QuickActions({ isAdmin }) {
+function QuickActions({ currentUser, isAdmin }) {
   const navigate = useNavigate();
+
+  const canUpload = hasRole(currentUser, "manager");
+  const canManageUsers = hasRole(currentUser, "admin") || isAdmin;
 
   return (
     <div className="bg-white rounded-xl border shadow-sm h-full">
@@ -22,44 +26,42 @@ function QuickActions({ isAdmin }) {
       </div>
 
       <div className="p-4 space-y-3">
+        {canUpload && (
+          <button
+            onClick={() => navigate("/upload")}
+            className="w-full flex items-center justify-between rounded-xl border p-4 hover:border-blue-500 hover:bg-blue-50 transition-all"
+          >
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100">
+                <Upload
+                  size={18}
+                  className="text-blue-600"
+                />
+              </div>
 
-        <button
-          onClick={() => navigate("/upload")}
-          className="w-full flex items-center justify-between rounded-xl border p-4 hover:border-blue-500 hover:bg-blue-50 transition-all"
-        >
-          <div className="flex items-center gap-3">
+              <div className="text-left">
+                <p className="font-medium text-gray-900">
+                  Upload Document
+                </p>
 
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100">
-              <Upload
-                size={18}
-                className="text-blue-600"
-              />
+                <p className="text-xs text-gray-500">
+                  Add PDFs to your knowledge base
+                </p>
+              </div>
             </div>
 
-            <div className="text-left">
-              <p className="font-medium text-gray-900">
-                Upload Document
-              </p>
-
-              <p className="text-xs text-gray-500">
-                Add PDFs to your knowledge base
-              </p>
-            </div>
-
-          </div>
-
-          <ChevronRight
-            size={18}
-            className="text-gray-400"
-          />
-        </button>
+            <ChevronRight
+              size={18}
+              className="text-gray-400"
+            />
+          </button>
+        )}
 
         <button
           onClick={() => navigate("/chat")}
           className="w-full flex items-center justify-between rounded-xl border p-4 hover:border-purple-500 hover:bg-purple-50 transition-all"
         >
           <div className="flex items-center gap-3">
-
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-100">
               <MessageSquare
                 size={18}
@@ -76,7 +78,6 @@ function QuickActions({ isAdmin }) {
                 Ask questions about your documents
               </p>
             </div>
-
           </div>
 
           <ChevronRight
@@ -85,13 +86,12 @@ function QuickActions({ isAdmin }) {
           />
         </button>
 
-        {isAdmin && (
+        {canManageUsers && (
           <button
             onClick={() => navigate("/users")}
             className="w-full flex items-center justify-between rounded-xl border p-4 hover:border-green-500 hover:bg-green-50 transition-all"
           >
             <div className="flex items-center gap-3">
-
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-100">
                 <Users
                   size={18}
@@ -108,7 +108,6 @@ function QuickActions({ isAdmin }) {
                   Invite and manage organization users
                 </p>
               </div>
-
             </div>
 
             <ChevronRight
@@ -117,7 +116,6 @@ function QuickActions({ isAdmin }) {
             />
           </button>
         )}
-
       </div>
     </div>
   );

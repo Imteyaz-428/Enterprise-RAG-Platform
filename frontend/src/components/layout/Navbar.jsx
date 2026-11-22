@@ -49,7 +49,7 @@ function Navbar({
           <div className="hidden sm:block text-right">
 
             <p className="font-medium text-gray-900">
-              {currentUser?.username || "User"}
+              {currentUser?.name || "User"}
             </p>
 
             <p className="text-sm text-gray-500 capitalize">

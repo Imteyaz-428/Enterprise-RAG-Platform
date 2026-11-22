@@ -16,7 +16,8 @@ export const login = (data) => {
     },
   });
 };
+
 export const me = async () => {
-    const res = await api.get("/users/me");
-    return res.data;
-  };
+  const res = await api.get("/auth/me");
+  return res.data;
+};

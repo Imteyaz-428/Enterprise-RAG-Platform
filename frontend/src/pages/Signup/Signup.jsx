@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 
 import AuthInput from "../../components/auth/AuthInput";
 import { signup } from "../../services/auth";
-import { saveToken } from "../../utils/token";
+import { saveToken, saveRefreshToken } from "../../utils/token";
 
 function Signup() {
   const navigate = useNavigate();
@@ -24,12 +24,15 @@ function Signup() {
       const res = await signup(data);
 
       saveToken(res.data.access_token);
+      if (res.data.refresh_token) {
+        saveRefreshToken(res.data.refresh_token);
+      }
 
       toast.success("Workspace created successfully.");
 
       reset();
 
-      navigate("/");
+      navigate("/dashboard");
     } catch (err) {
       toast.error(
         err.response?.data?.detail || "Signup failed."

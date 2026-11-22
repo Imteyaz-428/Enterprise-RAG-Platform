@@ -6,6 +6,7 @@ function UserTable({
   currentUserId,
   onDelete,
   isAdmin,
+  onRoleChange,
 }) {
 
   if (users.length === 0) {
@@ -21,19 +22,19 @@ function UserTable({
 
           <tr>
 
-            <th className="px-6 py-4 text-left">
+            <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
               Name
             </th>
 
-            <th className="px-6 py-4 text-left">
+            <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
               Email
             </th>
 
-            <th className="px-6 py-4 text-left">
+            <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
               Role
             </th>
 
-            <th className="px-6 py-4 text-right">
+            <th className="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider text-gray-600">
               Action
             </th>
 
@@ -41,7 +42,7 @@ function UserTable({
 
         </thead>
 
-        <tbody>
+        <tbody className="divide-y divide-gray-200">
 
           {users.map((user) => (
             <UserRow
@@ -50,6 +51,7 @@ function UserTable({
               currentUserId={currentUserId}
               onDelete={onDelete}
               isAdmin={isAdmin}
+              onRoleChange={onRoleChange}
             />
           ))}
 

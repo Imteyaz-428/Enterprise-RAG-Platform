@@ -1,26 +1,23 @@
-import { createContext, useContext, useEffect, useState } from "react";
-
+import { useEffect, useState } from "react";
+import { AuthContext } from "./useAuth";
 import { me } from "../services/auth";
-import { removeToken, getToken } from "../utils/token";
-
-const AuthContext = createContext();
+import { clearTokens, getToken } from "../utils/token";
 
 function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const fetchUser = async () => {
+    if (!getToken()) {
+      setUser(null);
+      setLoading(false);
+      return;
+    }
     try {
-      if (!getToken()) {
-        setLoading(false);
-        return;
-      }
-
       const res = await me();
-
-      setUser(res.data);
-    } catch (err) {
-      removeToken();
+      setUser(res);
+    } catch {
+      clearTokens();
       setUser(null);
     } finally {
       setLoading(false);
@@ -28,11 +25,39 @@ function AuthProvider({ children }) {
   };
 
   useEffect(() => {
-    fetchUser();
+    let ignore = false;
+    async function load() {
+      if (!getToken()) {
+        if (!ignore) {
+          setUser(null);
+          setLoading(false);
+        }
+        return;
+      }
+      try {
+        const res = await me();
+        if (!ignore) {
+          setUser(res);
+        }
+      } catch {
+        clearTokens();
+        if (!ignore) {
+          setUser(null);
+        }
+      } finally {
+        if (!ignore) {
+          setLoading(false);
+        }
+      }
+    }
+    load();
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   const logout = () => {
-    removeToken();
+    clearTokens();
     setUser(null);
   };
 
@@ -52,5 +77,3 @@ function AuthProvider({ children }) {
 }
 
 export default AuthProvider;
-
-export const useAuth = () => useContext(AuthContext);

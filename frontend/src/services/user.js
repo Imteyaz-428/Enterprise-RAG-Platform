@@ -6,7 +6,7 @@ export const getUsers = async () => {
 };
 
 export const getCurrentUser = async () => {
-  const res = await api.get("/users/me");
+  const res = await api.get("/auth/me");
   return res.data;
 };
 
@@ -20,23 +20,12 @@ export const deleteUser = async (userId) => {
   return res.data;
 };
 
-export const updateUser = async (
-  userId,
-  data
-) => {
-  const res = await api.put(
-    `/users/${userId}`,
-    data
-  );
-
+export const updateUser = async (userId, data) => {
+  const res = await api.put(`/users/${userId}`, data);
   return res.data;
 };
 
 export const changePassword = async (data) => {
-  const res = await api.put(
-    "/users/change-password",
-    data
-  );
-
+  const res = await api.put("/users/change-password", data);
   return res.data;
 };

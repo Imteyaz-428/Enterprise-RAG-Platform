@@ -3,6 +3,7 @@ import { FileText, Trash2 } from "lucide-react";
 function DocumentRow({
   document,
   onDelete,
+  canDelete = false,
 }) {
   const formatDate = (date) => {
     return new Date(date).toLocaleDateString("en-IN", {
@@ -23,6 +24,9 @@ function DocumentRow({
 
     return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
   };
+
+  const isCompleted = document.status === "completed";
+  const isFailed = document.status === "failed";
 
   return (
     <div className="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition">
@@ -50,6 +54,12 @@ function DocumentRow({
             {formatDate(document.uploaded_at)}
           </p>
 
+          {isFailed && document.error_message && (
+            <p className="text-xs text-red-500 mt-1 font-medium">
+              Error: {document.error_message}
+            </p>
+          )}
+
         </div>
 
       </div>
@@ -58,15 +68,19 @@ function DocumentRow({
 
         <span
           className={`flex items-center gap-2 text-sm font-medium ${
-            document.status === "completed"
+            isCompleted
               ? "text-green-600"
+              : isFailed
+              ? "text-red-600"
               : "text-yellow-600"
           }`}
         >
           <span
             className={`w-2 h-2 rounded-full ${
-              document.status === "completed"
+              isCompleted
                 ? "bg-green-500"
+                : isFailed
+                ? "bg-red-500"
                 : "bg-yellow-500"
             }`}
           />
@@ -75,12 +89,15 @@ function DocumentRow({
             document.status.slice(1)}
         </span>
 
-        <button
-          onClick={() => onDelete(document.id)}
-          className="p-2 rounded-lg text-gray-500 hover:bg-red-50 hover:text-red-600 transition"
-        >
-          <Trash2 size={18} />
-        </button>
+        {canDelete && (
+          <button
+            onClick={() => onDelete(document.id)}
+            className="p-2 rounded-lg text-gray-500 hover:bg-red-50 hover:text-red-600 transition"
+            title="Delete document"
+          >
+            <Trash2 size={18} />
+          </button>
+        )}
 
       </div>
 

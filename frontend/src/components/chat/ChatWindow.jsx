@@ -6,6 +6,7 @@ import TypingIndicator from "./TypingIndicator";
 function ChatWindow({
   messages,
   loading,
+  onRetry,
 }) {
   const bottomRef = useRef(null);
 
@@ -18,27 +19,21 @@ function ChatWindow({
 
   return (
     <div className="h-full overflow-y-auto bg-white">
-
       <div className="mx-auto flex max-w-5xl flex-col px-8 py-8">
-
-      {messages.map((message, index) => {
-  
-  return (
-    <MessageBubble
-      key={index}
-      message={message}
-    />
-  );
-})}
+        {messages.map((message, index) => (
+          <MessageBubble
+            key={index}
+            message={message}
+            onRetry={onRetry ? () => onRetry(message, index) : undefined}
+          />
+        ))}
 
         {loading && <TypingIndicator />}
 
         <div className="h-8" />
 
         <div ref={bottomRef} />
-
       </div>
-
     </div>
   );
 }

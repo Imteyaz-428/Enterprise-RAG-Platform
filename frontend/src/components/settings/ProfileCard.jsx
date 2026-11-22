@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { User, Pencil } from "lucide-react";
+import toast from "react-hot-toast";
 import {
   getCurrentUser,
   updateUser,
@@ -15,26 +16,31 @@ function ProfileCard() {
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    fetchUser();
-  }, []);
-
-  const fetchUser = async () => {
-    try {
-      const data = await getCurrentUser();
-
-      setUser(data);
-      setName(data.name);
-    } catch (err) {
-      console.error(err);
-      alert("Failed to load profile.");
-    } finally {
-      setLoading(false);
+    let ignore = false;
+    async function load() {
+      try {
+        const data = await getCurrentUser();
+        if (!ignore) {
+          setUser(data);
+          setName(data.name);
+        }
+      } catch {
+        toast.error("Failed to load profile.");
+      } finally {
+        if (!ignore) {
+          setLoading(false);
+        }
+      }
     }
-  };
+    load();
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   const handleSave = async () => {
     if (!name.trim()) {
-      alert("Name is required.");
+      toast.error("Name is required.");
       return;
     }
 
@@ -48,15 +54,11 @@ function ProfileCard() {
       setUser(updatedUser);
       setName(updatedUser.name);
 
-      alert("Profile updated successfully.");
-
+      toast.success("Profile updated successfully.");
       setIsEditing(false);
     } catch (err) {
-      console.error(err);
-
-      alert(
-        err.response?.data?.detail ||
-          "Failed to update profile."
+      toast.error(
+        err.response?.data?.detail || "Failed to update profile."
       );
     } finally {
       setSaving(false);

@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 
 import AuthInput from "../../components/auth/AuthInput";
 import { login } from "../../services/auth";
-import { saveToken } from "../../utils/token";
+import { saveToken, saveRefreshToken } from "../../utils/token";
 
 function Login() {
   const navigate = useNavigate();
@@ -24,6 +24,9 @@ function Login() {
       const res = await login(data);
 
       saveToken(res.data.access_token);
+      if (res.data.refresh_token) {
+        saveRefreshToken(res.data.refresh_token);
+      }
 
       toast.success("Login successful.");
 
