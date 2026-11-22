@@ -32,6 +32,18 @@ from utils.logger import logger
 MAX_TITLE_LENGTH = 50
 
 
+def format_sse_event(event: str, data: str) -> str:
+    """
+    Format each event per the SSE spec:
+    Split data on "\n" and emit one "data: " line per piece, then a blank line.
+    Tokens without a newline stay byte-for-byte identical to "event: <event>\ndata: <data>\n\n".
+    """
+    lines = [f"event: {event}"]
+    for piece in str(data).split("\n"):
+        lines.append(f"data: {piece}")
+    return "\n".join(lines) + "\n\n"
+
+
 class PrepResult(tuple):
     chunk_texts: Dict[int, str]
 
@@ -51,6 +63,10 @@ class PrepResult(tuple):
 
 
 class ChatService:
+    @staticmethod
+    def format_sse_event(event: str, data: str) -> str:
+        return format_sse_event(event, data)
+
     def __init__(
         self,
         retrieval_service: RetrievalService | None = None,
@@ -462,11 +478,10 @@ class ChatService:
                 f"data: {json.dumps({'session_id': session.id, 'citations': cached['citations']})}\n\n"
             )
 
-            for token in cached["answer"].split(" "):
-                yield (
-                    f"event: token\n"
-                    f"data: {token} \n\n"
-                )
+            words = cached["answer"].split(" ")
+            for i, token in enumerate(words):
+                token_text = token + (" " if i < len(words) - 1 else "")
+                yield format_sse_event("token", token_text)
 
             yield (
                 "event: done\n"
@@ -489,19 +504,16 @@ class ChatService:
                 prompt=prompt,
             ):
                 tokens.append(token)
-                yield (
-                    f"event: token\n"
-                    f"data: {token}\n\n"
-                )
+                yield format_sse_event("token", token)
             completed_successfully = True
         except Exception as e:
             safe_err = self.ai_service._sanitize_error(str(e))
             logger.error(f"Streaming error in chat_stream: {safe_err}")
 
             # Terminal error event: no token event is emitted after this
-            yield (
-                f"event: error\n"
-                f"data: {json.dumps({'error': 'AI provider generation failed. Please try again later.'})}\n\n"
+            yield format_sse_event(
+                "error",
+                json.dumps({'error': 'AI provider generation failed. Please try again later.'}),
             )
             yield (
                 "event: done\n"
