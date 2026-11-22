@@ -2,6 +2,8 @@ FROM python:3.13-slim
 
 WORKDIR /app
 
+ARG INSTALL_LOCAL_RERANKER=false
+
 # Install curl for health check probes
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
@@ -13,13 +15,21 @@ RUN groupadd -g 1000 appuser && \
 
 # Copy requirements
 COPY requirements.txt .
+COPY requirements-local-rerank.txt .
 
-# Install CPU torch wheel and backend requirements
-RUN pip install --no-cache-dir torch sentence-transformers --extra-index-url https://download.pytorch.org/whl/cpu && \
-    pip install --no-cache-dir -r requirements.txt
+# Install backend requirements; optionally install local cross-encoder
+RUN pip install --no-cache-dir -r requirements.txt && \
+    if [ "$INSTALL_LOCAL_RERANKER" = "true" ]; then \
+        pip install --no-cache-dir -r requirements-local-rerank.txt --extra-index-url https://download.pytorch.org/whl/cpu ; \
+    fi
+
+ENV RERANKER_BACKEND=onnx
 
 # Copy backend source code
 COPY . .
+
+# Download ONNX reranker model and tokenizer files at Docker build time
+RUN python scripts/download_onnx_model.py
 
 # Set up permissions, make entrypoint executable, and ensure writable directories exist
 RUN chmod +x entrypoint.sh && \

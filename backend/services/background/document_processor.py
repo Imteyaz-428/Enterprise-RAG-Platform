@@ -2,7 +2,8 @@ from database.database import SessionLocal
 from crud.document import get_document_by_id, update_document_status
 from models.document_chunk import DocumentChunk
 from utils.chunker import split_documents, strip_repeated_headers_and_footers
-from utils.embedding import generate_embeddings
+from utils.embedding import generate_embeddings, split_chunks_into_batches
+from utils.retry import retry_request
 from utils.pdf import extract_documents_from_pdf
 from utils.logger import logger
 
@@ -49,16 +50,19 @@ def process_document(
         if not chunks:
             raise ValueError("No chunks generated.")
 
-        # 4. Extract chunk text for embeddings
-        chunk_texts = [
-            chunk.page_content
-            for chunk in chunks
-        ]
+        # 4. Split chunks into embedding batches of at most EMBED_BATCH_TOKENS (estimate tokens as len(text)/3)
+        chunk_batches = split_chunks_into_batches(chunks)
 
-        # 5. Generate Voyage AI embeddings
-        embeddings = generate_embeddings(
-            chunk_texts
-        )
+        # 5. Embed batch by batch, retrying on 429 with exponential backoff up to 5 times
+        embeddings = []
+        for batch in chunk_batches:
+            batch_texts = [chunk.page_content for chunk in batch]
+            batch_embeddings = retry_request(
+                generate_embeddings,
+                batch_texts,
+                max_attempts=5,
+            )
+            embeddings.extend(batch_embeddings)
 
         if len(embeddings) != len(chunks):
             raise ValueError(

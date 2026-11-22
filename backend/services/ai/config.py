@@ -28,6 +28,29 @@ else:
 SEARCH_TOP_K = 5
 RERANK_CANDIDATES = 20
 
+# Free-Tier & Rate Limit Configuration
+VOYAGE_MIN_INTERVAL_SECONDS = float(os.getenv("VOYAGE_MIN_INTERVAL_SECONDS", "0"))
+EMBED_BATCH_TOKENS = int(os.getenv("EMBED_BATCH_TOKENS", "6000"))
+
+# Reranker Configuration
+# Options: "onnx" (default for Docker image), "local" (default for dev/tests), "voyage", "none"
+RERANKER_BACKEND = os.getenv("RERANKER_BACKEND", "local").lower()
+VOYAGE_RERANK_MODEL = os.getenv("VOYAGE_RERANK_MODEL", "rerank-2")
+
+# ONNX Reranker Model & Tokenizer Paths
+ONNX_RERANKER_DIR = os.getenv(
+    "ONNX_RERANKER_DIR",
+    str(Path(__file__).resolve().parent.parent.parent / "models" / "reranker"),
+)
+ONNX_RERANKER_MODEL_PATH = os.getenv(
+    "ONNX_RERANKER_MODEL_PATH",
+    str(Path(ONNX_RERANKER_DIR) / "model.onnx"),
+)
+ONNX_RERANKER_TOKENIZER_PATH = os.getenv(
+    "ONNX_RERANKER_TOKENIZER_PATH",
+    str(Path(ONNX_RERANKER_DIR) / "tokenizer.json"),
+)
+
 # AI Provider Reliability & Execution Configuration
 AI_REQUEST_TIMEOUT = 30  # seconds per request
 AI_MAX_RETRIES = 2       # maximum attempts per provider for transient errors

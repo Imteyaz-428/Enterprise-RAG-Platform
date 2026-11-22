@@ -82,6 +82,48 @@ sequenceDiagram
 
 ---
 
+### Reranking Architecture & Free-Tier Mode (512 MB Fit)
+
+The reranking stage refines hybrid candidate chunks (up to 20 candidate chunks) to the final `top_k` (default 5). The platform supports four configurable reranker backends via `RERANKER_BACKEND`:
+
+| Backend | Implementation | Memory Footprint | Recommended Use Case |
+|---|---|---|---|
+| `onnx` (Production Default) | Quantized int8 ONNX model (`ms-marco-MiniLM-L-6-v2`, 23.2 MB) via `onnxruntime` + `tokenizers` | ~108.6 MiB container RSS (peak ~156 MB) | Low-memory production (e.g. 512 MB RAM limit) and 100% free operation with 0 Voyage rerank cost |
+| `voyage` | Remote API call to Voyage AI (`rerank-2` via `voyageai` client) | ~100–150 MB container RSS | Paid Voyage accounts with high TPM quota |
+| `local` (Dev Default) | PyTorch + `sentence-transformers` (`ms-marco-MiniLM-L-6-v2`) | ~550–700 MB RAM | Local dev / offline evaluation (`requirements-local-rerank.txt`) |
+| `none` | Passthrough order truncated to `top_k` | ~100 MB container RSS | Zero external dependencies / ultra-low latency testing |
+
+#### Free-Tier Mode Configuration & Voyage Rate Limits
+
+Voyage AI free-tier accounts (without a payment method) enforce:
+- **3 requests/minute (3 RPM)**: Exceeding 1 request per 20 seconds triggers HTTP 429 errors.
+- **10,000 tokens/minute (10K TPM)**: Remote reranking 20 chunks consumes 5,000+ tokens, failing queries. Embedding PDFs of more than ~15 pages in one call triggers 429.
+
+To operate completely free without billing or failures:
+
+1. **Local CPU ONNX Reranker (`RERANKER_BACKEND=onnx`)**:
+   - Model: `cross-encoder/ms-marco-MiniLM-L-6-v2` (`onnx/model_qint8_arm64.onnx`, 23.2 MB), baked into the Docker image at build time.
+   - CPU-only execution with `intra_op_num_threads=1`, thread-safe double-checked lazy loading, cached for process lifetime.
+   - Pairs scored with `tokenizers` library (`max_length=512`, truncation, batches of at most 20).
+   - **Measured in `docker run --memory=512m`**:
+     - Container RAM during 20-chunk rerank: **108.6 MiB / 512 MiB (21.2%)**
+     - Peak Process RSS (`ru_maxrss`): **155.84 MB** (VmHWM: **160.5 MB**)
+     - Latency: **~0.36 s** for 20 chunks
+     - Mean Spearman correlation with PyTorch local reranker: **0.9709**
+     - Top-5 overlap with PyTorch local reranker: **100.0%**
+     - External tokens/cost: **0**
+
+2. **Embedding Rate Pacing & Ingestion Batching**:
+   - `VOYAGE_MIN_INTERVAL_SECONDS` (default `0`): Process-wide thread lock pacing consecutive Voyage API calls by at least `N` seconds (e.g. `21.0`).
+   - `EMBED_BATCH_TOKENS` (default `6000`): Ingestion batches chunks by estimated tokens (`len(text)/3 <= 6000`), embeds batch-by-batch, and retries on 429 with exponential backoff up to 5 times (reusing `utils/retry.py`). Document error message is updated only after all 5 retries are exhausted.
+   - **Query Embedding**: On 429, sleeps 5s and retries once; if rate limit persists, returns a clear HTTP 503 `"Search is busy, please retry in a few seconds"`.
+
+#### Fail-Open Resilience & Lazy Loading
+- **Lazy Loading**: `torch` and `sentence-transformers` are strictly loaded on first execution within `_rerank_local`, never at module import time and never at application startup. In the default Docker image, `torch` and `transformers` are completely excluded.
+- **Fail-Open**: All rerank operations fail open. If any transient error occurs (network failure, rate limit, timeout, or runtime error), the reranker catches the exception, logs a warning, and returns the reciprocal-rank-fused candidates truncated to `top_k` without failing the request.
+
+---
+
 ## Benchmark Evaluation Results
 
 The following evaluation metrics are taken directly from [`backend/eval/results/summary.csv`](../backend/eval/results/summary.csv) across iterative optimization phases (dense vector retrieval, BM25 sparse keyword fusion, cross-encoder reranking, and conversational query rewriting):

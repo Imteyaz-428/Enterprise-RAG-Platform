@@ -196,12 +196,44 @@ The table below outlines all environment variables utilized by the backend. **No
 | `ALGORITHM` | Cryptographic JWT signing algorithm (defaults to `HS256`) | Optional |
 | `ACCESS_TOKEN_EXPIRE_MINUTES` | Lifetime of access tokens in minutes (defaults to `180`) | Optional |
 | `REFRESH_TOKEN_EXPIRE_DAYS` | Lifetime of refresh tokens in days (defaults to `30`) | Optional |
-| `VOYAGE_API_KEY` | API key for Voyage AI dense embedding generation (`voyage-3-lite`) | Yes |
+| `VOYAGE_API_KEY` | API key for Voyage AI dense embedding generation (`voyage-3-large`) | Yes |
+| `VOYAGE_MIN_INTERVAL_SECONDS` | Minimum interval (in seconds) between consecutive Voyage API calls enforced via a process-wide lock (e.g. `20` or `21` for Voyage free tier's 3 RPM limit; defaults to `0`) | Optional |
+| `EMBED_BATCH_TOKENS` | Token threshold for batching chunks during document embedding (tokens estimated as `len(text)/3`; defaults to `6000` for Voyage free tier's 10,000 TPM limit) | Optional |
+| `RERANKER_BACKEND` | Reranker engine selection: `onnx` (default in production Docker image; CPU int8 quantized model), `local` (dev/test PyTorch CrossEncoder), `voyage` (Voyage AI remote API), `none` (passthrough); defaults to `onnx` in Docker image, `local` in dev | Optional |
+| `VOYAGE_RERANK_MODEL` | Voyage AI reranking model used when `RERANKER_BACKEND=voyage` (defaults to `rerank-2`) | Optional |
+| `ONNX_RERANKER_MODEL_PATH` | Path to the ONNX model file (defaults to `models/reranker/model.onnx`) | Optional |
+| `ONNX_RERANKER_TOKENIZER_PATH` | Path to the tokenizer JSON file (defaults to `models/reranker/tokenizer.json`) | Optional |
 | `GEMINI_API_KEY` | Primary LLM generation key (Google Gemini 2.5 Flash) | Yes |
 | `GOOGLE_API_KEY` | Alternative Google API key fallback for Gemini models | Optional |
 | `GROQ_API_KEY` | Secondary fallback LLM key (Groq Llama-3.3-70b-versatile) | Optional |
 | `DEEPSEEK_API_KEY` | Tertiary fallback LLM key (DeepSeek Chat) | Optional |
 | `PORT` | Web server bind port (defaults to `8000`) | Optional |
+
+### Free-Tier Mode & Memory Optimization (Zero Provider Billing)
+
+Without a paid subscription or payment method, Voyage AI imposes strict free-tier rate limits:
+- **3 requests/minute (3 RPM)**: Requests must be spaced by at least 20 seconds.
+- **10,000 tokens/minute (10,000 TPM)**: Remote reranking 20 candidate chunks consumes over 5,000 tokens per call, quickly exhausting quotas and failing queries. PDFs exceeding ~15 pages fail to embed in a single request.
+
+To run completely free without provider billing or rate limit exhaustion:
+
+1. **Local ONNX Reranker (`RERANKER_BACKEND=onnx`)**:
+   - Uses `cross-encoder/ms-marco-MiniLM-L-6-v2` quantized to int8 (`onnx/model_qint8_arm64.onnx`, 23.2 MB, bit-for-bit identical to generic CPU `model_qint8_avx512.onnx`), baked into the container image at Docker build time into `/app/models/reranker/`.
+   - Uses `tokenizers` (max length 512, truncation, batches of at most 20) and `onnxruntime` (CPU execution provider, `intra_op_num_threads=1`).
+   - Keeps `torch` and `transformers` completely out of the default Docker image.
+   - **Measured Memory in `docker run --memory=512m`**:
+     - Container memory during 20-chunk rerank: **108.6 MiB / 512 MiB (21.2% usage)**
+     - Process peak RSS (`ru_maxrss`): **155.84 MB** (VmHWM: **160.5 MB**)
+     - Latency: **~0.36 seconds** per 20 pairs
+     - Spearman rank correlation with PyTorch local reranker: **0.9709**
+     - Top-5 overlap with PyTorch local reranker: **100.0%**
+     - Voyage quota consumed: **0 TPM / 0 RPM** (completely free!)
+   - **Fail-Open**: Fails open to fused reciprocal rank order on any error.
+
+2. **Free-Tier Aware Embeddings**:
+   - `VOYAGE_MIN_INTERVAL_SECONDS` (default `0`): Process-wide thread lock enforcing consecutive Voyage API calls are at least `N` seconds apart (e.g. set to `21.0` to respect the 3 RPM limit).
+   - **Ingestion Batching**: In `document_processor.py`, chunks are split into batches of at most `EMBED_BATCH_TOKENS` (default `6000`, estimating tokens as `len(text)/3`), embedded batch-by-batch, retrying on 429 with exponential backoff up to 5 times (reusing `utils/retry.py`). Document error message is updated only after all 5 retries are exhausted.
+   - **Query Embedding**: On 429, waits 5 seconds and retries once; if rate limited again, returns a clear HTTP 503 `"Search is busy, please retry in a few seconds"`.
 
 ---
 

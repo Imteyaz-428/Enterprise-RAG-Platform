@@ -48,6 +48,7 @@ app.add_middleware(
         "http://localhost:5173",
         "https://enterprise-rag-platform-three.vercel.app",
     ],
+    allow_origin_regex=r"https://enterprise-rag-platform.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

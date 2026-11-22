@@ -17,3 +17,4 @@ backend/eval/.embed_cache.json
 app.db
 backend/eval/.cache/
 eval/
+backend/models/reranker/
