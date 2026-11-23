@@ -11,12 +11,9 @@ jobs:
     steps:
       - name: Ping Render backend
         run: |
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" 
-            --max-time 30 
-            https://enterprise-rag-platform-mu5i.onrender.com/)
-
-          echo "Render returned HTTP status: $STATUS"
-
-          if [ "$STATUS" -lt 200 ] || [ "$STATUS" -ge 400 ]; then
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --retry 3 --retry-delay 15 --max-time 60 https://enterprise-rag-platform-mu5i.onrender.com/health)
+          echo "Status: $STATUS"
+          if [ "$STATUS" != "200" ]; then
+            echo "Backend not healthy (status $STATUS)"
             exit 1
           fi
