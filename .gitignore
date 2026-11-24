@@ -18,3 +18,4 @@ app.db
 backend/eval/.cache/
 /eval/
 backend/models/reranker/
+node_modules/
