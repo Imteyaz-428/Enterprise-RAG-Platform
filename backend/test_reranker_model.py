@@ -1,5 +1,15 @@
 import pytest
-from sentence_transformers import CrossEncoder
+
+torch_available = False
+try:
+    import torch
+    from sentence_transformers import CrossEncoder
+    torch_available = True
+except ImportError:
+    pass
+
+pytestmark = pytest.mark.skipif(not torch_available, reason="torch or sentence_transformers not installed")
+
 from services.chat.reranking_service import get_optimal_device
 
 

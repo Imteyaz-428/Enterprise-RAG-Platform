@@ -20,12 +20,15 @@ _onnx_tokenizer = None
 
 
 def get_optimal_device() -> str:
-    import torch
+    try:
+        import torch
 
-    if hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
-        return "mps"
-    if torch.cuda.is_available():
-        return "cuda"
+        if hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+            return "mps"
+        if torch.cuda.is_available():
+            return "cuda"
+    except ImportError:
+        pass
     return "cpu"
 
 

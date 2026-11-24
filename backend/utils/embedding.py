@@ -14,9 +14,33 @@ from utils.logger import logger
 
 load_dotenv()
 
-client = voyageai.Client(
-    api_key=os.getenv("VOYAGE_API_KEY")
-)
+
+class _LazyVoyageClient:
+    """Lazy Voyage AI client that defers initialization until first use."""
+
+    def __init__(self):
+        self._real_client = None
+        self._cached_api_key = None
+
+    def _get_client(self) -> voyageai.Client:
+        current_key = os.getenv("VOYAGE_API_KEY")
+        if not current_key:
+            raise ValueError(
+                "VOYAGE_API_KEY is not configured. Please set the VOYAGE_API_KEY environment variable to generate embeddings."
+            )
+        if self._real_client is None or self._cached_api_key != current_key:
+            self._real_client = voyageai.Client(api_key=current_key)
+            self._cached_api_key = current_key
+        return self._real_client
+
+    def embed(self, *args, **kwargs):
+        return self._get_client().embed(*args, **kwargs)
+
+    def __getattr__(self, name):
+        return getattr(self._get_client(), name)
+
+
+client = _LazyVoyageClient()
 
 _rate_limit_lock = threading.Lock()
 _last_call_time: float = 0.0

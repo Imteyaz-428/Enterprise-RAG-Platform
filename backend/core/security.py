@@ -50,10 +50,12 @@ def create_access_token(data: dict):
     )
     to_encode.update({"exp": expire, "type": "access"})
 
+    key = os.getenv("SECRET_KEY") or SECRET_KEY
+    alg = os.getenv("ALGORITHM") or ALGORITHM
     encoded_jwt = jwt.encode(
         to_encode,
-        SECRET_KEY,
-        algorithm=ALGORITHM
+        key,
+        algorithm=alg
     )
 
     return encoded_jwt
@@ -66,10 +68,12 @@ def create_refresh_token(data: dict):
     )
     to_encode.update({"exp": expire, "type": "refresh"})
 
+    key = os.getenv("SECRET_KEY") or SECRET_KEY
+    alg = os.getenv("ALGORITHM") or ALGORITHM
     encoded_jwt = jwt.encode(
         to_encode,
-        SECRET_KEY,
-        algorithm=ALGORITHM
+        key,
+        algorithm=alg
     )
 
     return encoded_jwt
